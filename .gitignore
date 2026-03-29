@@ -1,0 +1,15 @@
+node_modules/
+vendor/
+.env
+.env.local
+.DS_Store
+*.log
+/storage/
+/cache/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.git/
+.env.*.local

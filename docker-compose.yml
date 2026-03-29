@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: irannews_app
+    ports:
+      - "8050:80"
+    environment:
+      DB_HOST: db
+      DB_USER: irannews_user
+      DB_PASSWORD: irannews_pass
+      DB_NAME: irannews
+      DB_PORT: 3306
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - irannews_network
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: irannews_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: irannews
+      MYSQL_USER: irannews_user
+      MYSQL_PASSWORD: irannews_pass
+    ports:
+      - "3317:3306"
+    volumes:
+      - irannews_db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - irannews_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  irannews_db_data:
+
+networks:
+  irannews_network:
+    driver: bridge

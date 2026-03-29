@@ -1,0 +1,23 @@
+{
+    "name": "irannews/irannews",
+    "description": "Plateforme d'actualités Iran - PHP MVC sans framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dev Team",
+            "email": "dev@irannews.local"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/config/bootstrap.php"
+        ]
+    }
+}

@@ -1,0 +1,58 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+# Exemption pour les dossiers statiques (ne pas rewriter)
+RewriteCond %{REQUEST_URI} ^/assets/ [OR]
+RewriteCond %{REQUEST_URI} ^/images/ [OR]
+RewriteCond %{REQUEST_URI} ^/public/
+RewriteRule ^ - [L]
+
+# Ne pas rewriter les fichiers et dossiers existants (CSS, JS, images)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Bloquer l'accès direct aux fichiers sensibles
+RewriteRule ^(app|database|config) - [F,L]
+
+# Article: /article-5 ou /article-5-mon-slug
+RewriteRule ^article-([0-9]+)(-[a-z0-9-]+)?/?$ index.php?page=article&id=$1 [L,QSA]
+
+# Catégorie: /categorie-politique
+RewriteRule ^categorie-([a-z0-9-]+)/?$ index.php?page=categorie&category=$1 [L,QSA]
+
+# Recherche: /recherche-mon-query
+RewriteRule ^recherche-(.+)/?$ index.php?page=recherche&q=$1 [L,QSA]
+
+# Admin: /admin-dashboard, /admin-news-list, etc
+RewriteRule ^admin-([a-z0-9-]+)/?$ index.php?page=admin&action=$1 [L,QSA]
+
+# Pages simples: /accueil, /connexion, /inscription, /a-propos, /contact
+RewriteRule ^(accueil|connexion|inscription|a-propos|contact)/?$ index.php?page=$1 [L,QSA]
+
+# Rediriger vers index.php par défaut si rien ne correspond
+RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]
+
+# Cache et compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# En-têtes de sécurité
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Cache des fichiers statiques
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType text/javascript "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
