@@ -86,54 +86,14 @@ class BackController {
 
         $images = $this->newsModel->getAllImages($id);
 
-        return $this->buildNewsShowResponse($news, $images);
-    }
-
-    public function mediaUpdate($mediaId) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . adminUrl('news-list'));
-            exit;
-        }
-
-        $media = $this->newsModel->getMediaById($mediaId);
-        if (!$media) {
-            header('Location: ' . adminUrl('news-list'));
-            exit;
-        }
-
-        $articleId = (int)$media['article_id'];
-        $news = $this->newsModel->getByIdForAdmin($articleId);
-        if (!$news) {
-            header('Location: ' . adminUrl('news-list'));
-            exit;
-        }
-
-        if (empty($_FILES['image'])) {
-            $images = $this->newsModel->getAllImages($articleId);
-            return $this->buildNewsShowResponse($news, $images, 'Aucune image sélectionnée.');
-        }
-
-        $updateResult = $this->handleSingleImageUpdate($articleId, $mediaId, $_FILES['image'], $news['title'] ?? null);
-        if ($updateResult !== true) {
-            $images = $this->newsModel->getAllImages($articleId);
-            return $this->buildNewsShowResponse($news, $images, $updateResult);
-        }
-
-        header('Location: ' . adminUrl('news-show', $articleId));
-        exit;
-    }
-
-    public function mediaDelete($mediaId) {
-        $media = $this->newsModel->getMediaById($mediaId);
-        if (!$media) {
-            header('Location: ' . adminUrl('news-list'));
-            exit;
-        }
-
-        $this->newsModel->deleteMedia($mediaId);
-
-        header('Location: ' . adminUrl('news-show', (int)$media['article_id']));
-        exit;
+        return [
+            'view' => 'back/news/show.php',
+            'data' => [
+                'news' => $news,
+                'images' => $images,
+                'page_title' => 'Détail article - ' . htmlspecialchars($news['title'])
+            ]
+        ];
     }
 
     public function newsTogglePublish($id) {
@@ -159,6 +119,7 @@ class BackController {
             $description = $_POST['description'] ?? '';
             $autor = $_POST['autor'] ?? '';
             $etat = isset($_POST['published']) ? 1 : 0;
+            $imagesAltText = trim($_POST['images_alt_text'] ?? '');
 
             if (empty($title) || empty($content)) {
                 return [
@@ -175,7 +136,7 @@ class BackController {
             
             // Gérer les uploads d'images
             if (!empty($_FILES['images']['name'][0])) {
-                $uploadErrors = $this->handleImageUpload($newsId, $_FILES['images']);
+                $uploadErrors = $this->handleImageUpload($newsId, $_FILES['images'], $imagesAltText);
                 if (!empty($uploadErrors)) {
                     $news = $this->newsModel->getByIdForAdmin($newsId);
                     $categories = $this->categoryModel->getAll();
@@ -216,6 +177,7 @@ class BackController {
             $description = $_POST['description'] ?? '';
             $autor = $_POST['autor'] ?? '';
             $etat = isset($_POST['published']) ? 1 : 0;
+            $imagesAltText = trim($_POST['images_alt_text'] ?? '');
 
             if (empty($title) || empty($content)) {
                 return [
@@ -232,7 +194,7 @@ class BackController {
 
             // Gérer les uploads d'images
             if (!empty($_FILES['images']['name'][0])) {
-                $uploadErrors = $this->handleImageUpload($id, $_FILES['images']);
+                $uploadErrors = $this->handleImageUpload($id, $_FILES['images'], $imagesAltText);
                 if (!empty($uploadErrors)) {
                     $news = $this->newsModel->getByIdForAdmin($id);
                     $categories = $this->categoryModel->getAll();
@@ -282,6 +244,123 @@ class BackController {
         exit;
     }
 
+    public function mediaUpdate($imageId) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . adminUrl('news-list'));
+            exit;
+        }
+
+        $image = $this->newsModel->getImageById($imageId);
+        if (!$image) {
+            return [
+                'view' => 'errors/404.php',
+                'data' => ['message' => 'Image non trouvée']
+            ];
+        }
+
+        $articleId = (int)$image['article_id'];
+        $article = $this->newsModel->getByIdForAdmin($articleId);
+        $articleTitle = $article['title'] ?? null;
+
+        $altText = trim($_POST['alt_text'] ?? '');
+        if ($altText === '') {
+            $altText = $articleTitle ?: ($image['alt_text'] ?? null);
+        }
+
+        $errors = [];
+        $newUrl = null;
+
+        if (!empty($_FILES['image']['name'])) {
+            $file = $_FILES['image'];
+            $errorCode = $file['error'] ?? UPLOAD_ERR_NO_FILE;
+            if ($errorCode === UPLOAD_ERR_OK) {
+                $fileSize = $file['size'] ?? 0;
+                $fileType = $file['type'] ?? '';
+                $tmpName = $file['tmp_name'] ?? '';
+                $fileName = $file['name'] ?? 'image';
+
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $maxFileSize = 5 * 1024 * 1024;
+                $maxFileSizeMb = (int)($maxFileSize / 1024 / 1024);
+
+                if (!in_array($fileType, $allowedTypes)) {
+                    $errors[] = $fileName . ' (format non autorise)';
+                } elseif ($fileSize > $maxFileSize) {
+                    $errors[] = $fileName . ' (taille > ' . $maxFileSizeMb . ' Mo)';
+                } elseif (!is_uploaded_file($tmpName)) {
+                    $errors[] = $fileName . ' (fichier invalide)';
+                } else {
+                    $uploadDir = __DIR__ . '/../../../public/uploads/articles/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+
+                    $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+                    $uniqueName = 'article-' . $articleId . '-' . time() . '-' . uniqid() . '.' . $ext;
+                    $uploadPath = $uploadDir . $uniqueName;
+
+                    if (move_uploaded_file($tmpName, $uploadPath)) {
+                        $this->optimizeImage($uploadPath, $fileType);
+                        $newUrl = '/uploads/articles/' . $uniqueName;
+                    } else {
+                        $errors[] = $fileName . ' (impossible de sauvegarder)';
+                    }
+                }
+            } elseif ($errorCode !== UPLOAD_ERR_NO_FILE) {
+                $errors[] = ($file['name'] ?? 'image') . ' (erreur upload)';
+            }
+        }
+
+        if (!empty($errors)) {
+            $images = $this->newsModel->getAllImages($articleId);
+            return [
+                'view' => 'back/news/show.php',
+                'data' => [
+                    'news' => $article,
+                    'images' => $images,
+                    'error' => 'Mise a jour image echouee: ' . implode(' | ', $errors)
+                ]
+            ];
+        }
+
+        $this->newsModel->updateImage($imageId, $newUrl, $altText);
+        $images = $this->newsModel->getAllImages($articleId);
+
+        return [
+            'view' => 'back/news/show.php',
+            'data' => [
+                'news' => $article,
+                'images' => $images,
+                'success' => 'Image mise a jour avec succes'
+            ]
+        ];
+    }
+
+    public function mediaDelete($imageId) {
+        $image = $this->newsModel->getImageById($imageId);
+        if (!$image) {
+            return [
+                'view' => 'errors/404.php',
+                'data' => ['message' => 'Image non trouvée']
+            ];
+        }
+
+        $articleId = (int)$image['article_id'];
+        $this->newsModel->deleteImage($imageId);
+
+        $article = $this->newsModel->getByIdForAdmin($articleId);
+        $images = $this->newsModel->getAllImages($articleId);
+
+        return [
+            'view' => 'back/news/show.php',
+            'data' => [
+                'news' => $article,
+                'images' => $images,
+                'success' => 'Image supprimee'
+            ]
+        ];
+    }
+
     public function usersList() {
         $users = $this->userModel->getAll();
         return [
@@ -290,7 +369,7 @@ class BackController {
         ];
     }
 
-    private function handleImageUpload($articleId, $files) {
+    private function handleImageUpload($articleId, $files, $imagesAltText = '') {
         $article = $this->newsModel->getByIdForAdmin($articleId);
         $articleTitle = $article['title'] ?? null;
         $errors = [];
@@ -348,7 +427,7 @@ class BackController {
                 
                 // Insérer l'image dans la base de données
                 $publicUrl = '/uploads/articles/' . $uniqueName;
-                $altText = $articleTitle ?: $fileName;
+                $altText = $imagesAltText !== '' ? $imagesAltText : ($articleTitle ?: $fileName);
                 $this->newsModel->insertImage($articleId, $publicUrl, $altText);
             } else {
                 $errors[] = $fileName . ' (impossible de sauvegarder)';
@@ -358,87 +437,10 @@ class BackController {
         return $errors;
     }
 
-    private function handleSingleImageUpdate($articleId, $mediaId, $file, $articleTitle) {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxFileSize = 5 * 1024 * 1024; // 5MB
-        $maxFileSizeMb = (int)($maxFileSize / 1024 / 1024);
-
-        $fileName = $file['name'] ?? 'image';
-        $errorCode = $file['error'] ?? UPLOAD_ERR_NO_FILE;
-
-        if ($errorCode === UPLOAD_ERR_NO_FILE) {
-            return 'Aucune image sélectionnée.';
-        }
-
-        if ($errorCode !== UPLOAD_ERR_OK) {
-            return $fileName . ' (erreur upload)';
-        }
-
-        $fileSize = $file['size'] ?? 0;
-        $fileType = $file['type'] ?? '';
-        $tmpName = $file['tmp_name'] ?? '';
-
-        if (!in_array($fileType, $allowedTypes)) {
-            return $fileName . ' (format non autorisé)';
-        }
-
-        if ($fileSize > $maxFileSize) {
-            return $fileName . ' (taille > ' . $maxFileSizeMb . ' Mo)';
-        }
-
-        if (!is_uploaded_file($tmpName)) {
-            return $fileName . ' (fichier invalide)';
-        }
-
-        $uploadDir = __DIR__ . '/../../../public/uploads/articles/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uniqueName = 'article-' . $articleId . '-' . time() . '-' . uniqid() . '.' . $ext;
-        $uploadPath = $uploadDir . $uniqueName;
-
-        if (!move_uploaded_file($tmpName, $uploadPath)) {
-            return $fileName . ' (impossible de sauvegarder)';
-        }
-
-        $this->optimizeImage($uploadPath, $fileType);
-
-        $publicUrl = '/uploads/articles/' . $uniqueName;
-        $altText = $articleTitle ?: $fileName;
-        $this->newsModel->updateMedia($mediaId, $publicUrl, $altText);
-
-        return true;
-    }
-
-    private function buildNewsShowResponse($news, $images, $error = null, $success = null) {
-        $data = [
-            'news' => $news,
-            'images' => $images,
-            'page_title' => 'Détail article - ' . htmlspecialchars($news['title'])
-        ];
-
-        if ($error) {
-            $data['error'] = $error;
-            $data['suppress_global_alert'] = true;
-        }
-
-        if ($success) {
-            $data['success'] = $success;
-            $data['suppress_global_alert'] = true;
-        }
-
-        return [
-            'view' => 'back/news/show.php',
-            'data' => $data
-        ];
-    }
-
     private function optimizeImage($filePath, $mimeType) {
         // Configuration d'optimisation
-        $maxWidth = 1920;
-        $maxHeight = 1080;
+        $maxWidth = 1600;
+        $maxHeight = 900;
         $jpegQuality = 80;
         $pngCompression = 7;
 
@@ -474,30 +476,65 @@ class BackController {
                 return;
             }
 
-            // Calculer les nouvelles dimensions
-            $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
-            if ($ratio < 1) {
-                $newWidth = (int)($width * $ratio);
-                $newHeight = (int)($height * $ratio);
+            // Redimensionner si l'image depasse les limites
+            if ($width > $maxWidth || $height > $maxHeight) {
+                $resized = null;
 
-                // Créer une nouvelle image redimensionnée
-                $resized = @imagecreatetruecolor($newWidth, $newHeight);
-                
-                if (!$resized) {
-                    @imagedestroy($image);
-                    return;
+                if ($width >= $maxWidth && $height >= $maxHeight) {
+                    $scale = max($maxWidth / $width, $maxHeight / $height);
+                    $scaledWidth = (int)round($width * $scale);
+                    $scaledHeight = (int)round($height * $scale);
+
+                    $resized = @imagecreatetruecolor($scaledWidth, $scaledHeight);
+                    if (!$resized) {
+                        @imagedestroy($image);
+                        return;
+                    }
+
+                    if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+                        @imagealphablending($resized, false);
+                        @imagesavealpha($resized, true);
+                    }
+
+                    @imagecopyresampled($resized, $image, 0, 0, 0, 0, $scaledWidth, $scaledHeight, $width, $height);
+
+                    $cropX = max(0, (int)floor(($scaledWidth - $maxWidth) / 2));
+                    $cropY = max(0, (int)floor(($scaledHeight - $maxHeight) / 2));
+
+                    $cropped = @imagecreatetruecolor($maxWidth, $maxHeight);
+                    if (!$cropped) {
+                        @imagedestroy($resized);
+                        @imagedestroy($image);
+                        return;
+                    }
+
+                    if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+                        @imagealphablending($cropped, false);
+                        @imagesavealpha($cropped, true);
+                    }
+
+                    @imagecopy($cropped, $resized, 0, 0, $cropX, $cropY, $maxWidth, $maxHeight);
+                    @imagedestroy($resized);
+                    $resized = $cropped;
+                } else {
+                    $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
+                    $newWidth = (int)round($width * $ratio);
+                    $newHeight = (int)round($height * $ratio);
+
+                    $resized = @imagecreatetruecolor($newWidth, $newHeight);
+                    if (!$resized) {
+                        @imagedestroy($image);
+                        return;
+                    }
+
+                    if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+                        @imagealphablending($resized, false);
+                        @imagesavealpha($resized, true);
+                    }
+
+                    @imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
                 }
 
-                // Préserver la transparence pour PNG et GIF
-                if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
-                    @imagealphablending($resized, false);
-                    @imagesavealpha($resized, true);
-                }
-
-                // Redimensionner
-                @imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-
-                // Sauvegarder l'image optimisée
                 if ($mimeType === 'image/jpeg' && function_exists('imagejpeg')) {
                     @imagejpeg($resized, $filePath, $jpegQuality);
                 } elseif ($mimeType === 'image/png' && function_exists('imagepng')) {

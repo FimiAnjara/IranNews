@@ -372,6 +372,60 @@ h6 {
     gap: 1rem;
 }
 
+.admin-image-viewer {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.admin-image-frame {
+    width: 100%;
+}
+
+.admin-image-frame img {
+    width: 100%;
+    height: 360px;
+    object-fit: contain;
+    background-color: var(--paper-2);
+    border-radius: 8px;
+    display: block;
+}
+
+.admin-image-nav {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-image-nav:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.admin-image-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-image-caption {
+    margin-top: 0.75rem;
+    color: var(--ink-muted);
+    font-size: 0.85rem;
+}
+
+
 .admin-image-item {
     background: var(--card);
     border: 1px solid var(--border);
@@ -383,14 +437,63 @@ h6 {
 .admin-image-item img {
     display: block;
     width: 100%;
-    height: 180px;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
+    background-color: var(--paper-2);
 }
 
 .admin-image-item figcaption {
     padding: 0.75rem 0.9rem;
     font-size: 0.8rem;
     color: var(--ink-muted);
+}
+
+/* Uploaded images sizing */
+.admin-detail-content img {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.admin-image-item figcaption p {
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.admin-image-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.admin-image-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 700;
+}
+
+.admin-image-form input[type="text"],
+.admin-image-form input[type="file"] {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background-color: var(--card);
+}
+
+.admin-image-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .badge {

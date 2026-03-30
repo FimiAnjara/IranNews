@@ -331,7 +331,7 @@ class News extends Model {
      */
     public function getAllImages($articleId) {
         $this->db->query("
-            SELECT url, alt_text FROM media 
+            SELECT id, url, alt_text FROM media 
             WHERE article_id = :article_id AND delete_at IS NULL
             ORDER BY created_at ASC
         ");

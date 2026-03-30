@@ -237,7 +237,7 @@ class News extends Model {
      */
     public function getFirstImage($articleId) {
         $this->db->query("
-            SELECT id, url, alt_text FROM media 
+            SELECT url, alt_text FROM media 
             WHERE article_id = :article_id AND delete_at IS NULL
             ORDER BY created_at ASC 
             LIMIT 1
@@ -340,39 +340,52 @@ class News extends Model {
     }
 
     /**
-     * Récupérer une image par ID
+     * Recuperer une image par ID
      */
-    public function getMediaById($mediaId) {
+    public function getImageById($imageId) {
         $this->db->query("
             SELECT id, article_id, url, alt_text
             FROM media
             WHERE id = :id AND delete_at IS NULL
         ");
-        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+        $this->db->bind(':id', (int)$imageId, PDO::PARAM_INT);
         return $this->db->single();
     }
 
     /**
-     * Mettre à jour une image
+     * Mettre a jour une image
      */
-    public function updateMedia($mediaId, $url, $altText = null) {
-        $this->db->query("
-            UPDATE media
-            SET url = :url, alt_text = :alt_text
-            WHERE id = :id AND delete_at IS NULL
-        ");
-        $this->db->bind(':url', $url);
-        $this->db->bind(':alt_text', $altText);
-        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+    public function updateImage($imageId, $url = null, $altText = null) {
+        $fields = [];
+        if ($url !== null) {
+            $fields[] = "url = :url";
+        }
+        if ($altText !== null) {
+            $fields[] = "alt_text = :alt_text";
+        }
+
+        if (empty($fields)) {
+            return true;
+        }
+
+        $sql = "UPDATE media SET " . implode(', ', $fields) . " WHERE id = :id AND delete_at IS NULL";
+        $this->db->query($sql);
+        $this->db->bind(':id', (int)$imageId, PDO::PARAM_INT);
+        if ($url !== null) {
+            $this->db->bind(':url', $url);
+        }
+        if ($altText !== null) {
+            $this->db->bind(':alt_text', $altText);
+        }
         return $this->db->execute();
     }
 
     /**
-     * Supprimer (soft delete) une image
+     * Supprimer une image (soft delete)
      */
-    public function deleteMedia($mediaId) {
+    public function deleteImage($imageId) {
         $this->db->query("UPDATE media SET delete_at = NOW() WHERE id = :id AND delete_at IS NULL");
-        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+        $this->db->bind(':id', (int)$imageId, PDO::PARAM_INT);
         return $this->db->execute();
     }
 

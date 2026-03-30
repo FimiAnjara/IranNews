@@ -51,18 +51,85 @@
     </div>
 
     <?php if (!empty($images)): ?>
+        <?php
+            $imagePayload = [];
+            foreach ($images as $image) {
+                $imagePayload[] = [
+                    'id' => (int)$image['id'],
+                    'url' => $image['url'],
+                    'alt' => $image['alt_text'] ?? '',
+                    'updateUrl' => adminUrl('media-update', $image['id']),
+                    'deleteUrl' => adminUrl('media-delete', $image['id'])
+                ];
+            }
+            $firstImage = $imagePayload[0];
+        ?>
         <div class="admin-detail-section">
             <h2>Images</h2>
-            <div class="admin-image-grid">
-                <?php foreach ($images as $image): ?>
-                    <figure class="admin-image-item">
-                        <img src="<?php echo htmlspecialchars($image['url']); ?>" alt="<?php echo htmlspecialchars($image['alt_text'] ?? 'Image article'); ?>">
-                        <?php if (!empty($image['alt_text'])): ?>
-                            <figcaption><?php echo htmlspecialchars($image['alt_text']); ?></figcaption>
-                        <?php endif; ?>
-                    </figure>
-                <?php endforeach; ?>
+            <div class="admin-image-viewer">
+                <button class="admin-image-nav" id="admin-image-prev" type="button" aria-label="Image precedente">‹</button>
+                <div class="admin-image-frame">
+                    <img id="admin-image-display" src="<?php echo htmlspecialchars($firstImage['url']); ?>" alt="<?php echo htmlspecialchars($firstImage['alt'] ?: 'Image article'); ?>">
+                </div>
+                <button class="admin-image-nav" id="admin-image-next" type="button" aria-label="Image suivante">›</button>
             </div>
+            <p id="admin-image-caption" class="admin-image-caption"><?php echo htmlspecialchars($firstImage['alt']); ?></p>
+
+            <form class="admin-image-form" id="admin-image-form" method="POST" action="<?php echo htmlspecialchars($firstImage['updateUrl']); ?>" enctype="multipart/form-data">
+                <label class="admin-image-label" for="admin-alt-text">Texte alternatif</label>
+                <input id="admin-alt-text" type="text" name="alt_text" value="<?php echo htmlspecialchars($firstImage['alt']); ?>">
+
+                <label class="admin-image-label" for="admin-image-file">Remplacer l'image</label>
+                <input id="admin-image-file" type="file" name="image" accept="image/*">
+
+                <div class="admin-image-actions">
+                    <button type="submit" class="btn btn-sm btn-primary">Mettre a jour</button>
+                    <a href="<?php echo htmlspecialchars($firstImage['deleteUrl']); ?>" id="admin-image-delete" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cette image?');">Supprimer</a>
+                </div>
+            </form>
         </div>
+
+        <script>
+            (function() {
+                const images = <?php echo json_encode($imagePayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+                const display = document.getElementById('admin-image-display');
+                const caption = document.getElementById('admin-image-caption');
+                const altInput = document.getElementById('admin-alt-text');
+                const form = document.getElementById('admin-image-form');
+                const deleteLink = document.getElementById('admin-image-delete');
+                const prevBtn = document.getElementById('admin-image-prev');
+                const nextBtn = document.getElementById('admin-image-next');
+
+                if (!images.length) {
+                    return;
+                }
+
+                let index = 0;
+
+                function render() {
+                    const current = images[index];
+                    display.src = current.url;
+                    display.alt = current.alt || 'Image article';
+                    caption.textContent = current.alt || '';
+                    altInput.value = current.alt || '';
+                    form.action = current.updateUrl;
+                    deleteLink.href = current.deleteUrl;
+                    prevBtn.disabled = images.length <= 1;
+                    nextBtn.disabled = images.length <= 1;
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    index = (index - 1 + images.length) % images.length;
+                    render();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    index = (index + 1) % images.length;
+                    render();
+                });
+
+                render();
+            })();
+        </script>
     <?php endif; ?>
 </div>

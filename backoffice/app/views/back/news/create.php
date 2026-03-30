@@ -56,6 +56,12 @@
         </div>
 
         <div class="form-group">
+            <label for="images_alt_text">Texte alternatif des images:</label>
+            <input type="text" id="images_alt_text" name="images_alt_text" maxlength="255" placeholder="Ex: Vue generale de la manifestation">
+            <small>Ce texte sera applique a toutes les images ajoutees.</small>
+        </div>
+
+        <div class="form-group">
             <label for="images">Images:</label>
             <input type="file" id="images" name="images[]" multiple accept="image/*">
             <small>Sélectionnez une ou plusieurs images (JPG, PNG, GIF)</small>
