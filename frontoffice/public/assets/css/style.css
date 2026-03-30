@@ -658,6 +658,10 @@ main {
     border-left: 4px solid transparent;
 }
 
+.form-alert {
+    margin-top: 1rem;
+}
+
 .alert-success {
     background-color: #f2faf5;
     color: #1a4d33;

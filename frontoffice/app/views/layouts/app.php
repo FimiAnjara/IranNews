@@ -61,16 +61,18 @@
 
     <!-- Main Content -->
     <main class="container">
-        <?php if (isset($data['error'])): ?>
-            <div class="alert alert-danger">
-                <?php echo htmlspecialchars($data['error']); ?>
-            </div>
-        <?php endif; ?>
+        <?php if (empty($data['suppress_global_alert'])): ?>
+            <?php if (isset($data['error'])): ?>
+                <div class="alert alert-danger">
+                    <?php echo htmlspecialchars($data['error']); ?>
+                </div>
+            <?php endif; ?>
 
-        <?php if (isset($data['success'])): ?>
-            <div class="alert alert-success">
-                <?php echo htmlspecialchars($data['success']); ?>
-            </div>
+            <?php if (isset($data['success'])): ?>
+                <div class="alert alert-success">
+                    <?php echo htmlspecialchars($data['success']); ?>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php echo $viewContent ?? ''; ?>

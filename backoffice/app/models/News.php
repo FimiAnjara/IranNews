@@ -10,7 +10,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.etat = 1 
+            WHERE a.etat = 1 AND a.delete_at IS NULL
             ORDER BY a.published_at DESC 
             LIMIT :limit OFFSET :offset
         ");
@@ -27,6 +27,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.delete_at IS NULL
             ORDER BY a.published_at DESC 
             LIMIT :limit OFFSET :offset
         ");
@@ -43,7 +44,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name, c.slug as category_slug
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.id = :id AND a.etat = 1
+            WHERE a.id = :id AND a.etat = 1 AND a.delete_at IS NULL
         ");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->single();
@@ -57,7 +58,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name, c.slug as category_slug
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.id = :id
+            WHERE a.id = :id AND a.delete_at IS NULL
         ");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->single();
@@ -71,7 +72,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name, c.slug as category_slug
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.slug = :slug AND a.etat = 1
+            WHERE a.slug = :slug AND a.etat = 1 AND a.delete_at IS NULL
         ");
         $this->db->bind(':slug', $slug);
         return $this->db->single();
@@ -85,7 +86,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name, c.slug as category_slug
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE (c.name = :category OR c.slug = :category) AND a.etat = 1
+            WHERE (c.name = :category OR c.slug = :category) AND a.etat = 1 AND a.delete_at IS NULL
             ORDER BY a.published_at DESC
             LIMIT :limit OFFSET :offset
         ");
@@ -105,7 +106,7 @@ class News extends Model {
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
             WHERE (a.title LIKE :query OR a.description LIKE :query OR a.content LIKE :query)
-            AND a.etat = 1
+            AND a.etat = 1 AND a.delete_at IS NULL
             ORDER BY a.published_at DESC
             LIMIT :limit OFFSET :offset
         ");
@@ -123,7 +124,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.etat = 1 
+            WHERE a.etat = 1 AND a.delete_at IS NULL
             ORDER BY a.published_at DESC
         ";
         if ($limit) {
@@ -144,7 +145,7 @@ class News extends Model {
             SELECT a.*, c.name as category_name
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.etat = 0 
+            WHERE a.etat = 0 AND a.delete_at IS NULL
             ORDER BY a.created_at DESC
         ";
         if ($limit) {
@@ -212,7 +213,11 @@ class News extends Model {
      * Supprimer un article
      */
     public function delete($id) {
-        $this->db->query("DELETE FROM articles WHERE id = :id");
+        $this->db->query("UPDATE articles SET delete_at = NOW(), etat = 0, updated_at = NOW() WHERE id = :id AND delete_at IS NULL");
+        $this->db->bind(':id', $id, PDO::PARAM_INT);
+        $this->db->execute();
+
+        $this->db->query("UPDATE media SET delete_at = NOW() WHERE article_id = :id AND delete_at IS NULL");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->execute();
     }
@@ -232,8 +237,8 @@ class News extends Model {
      */
     public function getFirstImage($articleId) {
         $this->db->query("
-            SELECT url, alt_text FROM media 
-            WHERE article_id = :article_id 
+            SELECT id, url, alt_text FROM media 
+            WHERE article_id = :article_id AND delete_at IS NULL
             ORDER BY created_at ASC 
             LIMIT 1
         ");
@@ -250,6 +255,7 @@ class News extends Model {
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
             WHERE 1=1
+            AND a.delete_at IS NULL
         ";
         
         // Filtre recherche (titre, id, description)
@@ -312,7 +318,7 @@ class News extends Model {
         if ($status == 1) {
             $sql .= ", published_at = NOW()";
         }
-        $sql .= " WHERE id = :id";
+        $sql .= " WHERE id = :id AND delete_at IS NULL";
         
         $this->db->query($sql);
         $this->db->bind(':status', (int)$status, PDO::PARAM_INT);
@@ -325,12 +331,49 @@ class News extends Model {
      */
     public function getAllImages($articleId) {
         $this->db->query("
-            SELECT url, alt_text FROM media 
-            WHERE article_id = :article_id 
+            SELECT id, url, alt_text FROM media 
+            WHERE article_id = :article_id AND delete_at IS NULL
             ORDER BY created_at ASC
         ");
         $this->db->bind(':article_id', (int)$articleId, PDO::PARAM_INT);
         return $this->db->resultSet();
+    }
+
+    /**
+     * Récupérer une image par ID
+     */
+    public function getMediaById($mediaId) {
+        $this->db->query("
+            SELECT id, article_id, url, alt_text
+            FROM media
+            WHERE id = :id AND delete_at IS NULL
+        ");
+        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+        return $this->db->single();
+    }
+
+    /**
+     * Mettre à jour une image
+     */
+    public function updateMedia($mediaId, $url, $altText = null) {
+        $this->db->query("
+            UPDATE media
+            SET url = :url, alt_text = :alt_text
+            WHERE id = :id AND delete_at IS NULL
+        ");
+        $this->db->bind(':url', $url);
+        $this->db->bind(':alt_text', $altText);
+        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+        return $this->db->execute();
+    }
+
+    /**
+     * Supprimer (soft delete) une image
+     */
+    public function deleteMedia($mediaId) {
+        $this->db->query("UPDATE media SET delete_at = NOW() WHERE id = :id AND delete_at IS NULL");
+        $this->db->bind(':id', (int)$mediaId, PDO::PARAM_INT);
+        return $this->db->execute();
     }
 
     /**

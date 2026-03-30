@@ -1,5 +1,17 @@
 <div class="admin-create">
     <h1>Créer un nouvel article</h1>
+
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger form-alert">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success form-alert">
+            <?php echo htmlspecialchars($success); ?>
+        </div>
+    <?php endif; ?>
     
     <script src="/assets/js/tinymce/tinymce.min.js"></script>
     <script>

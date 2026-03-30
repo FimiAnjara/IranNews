@@ -41,14 +41,20 @@ class CategoryController {
             if (empty($name)) {
                 return [
                     'view' => 'back/categories/create.php',
-                    'data' => ['error' => 'Le nom de la catégorie est requis']
+                    'data' => [
+                        'error' => 'Le nom de la catégorie est requis',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
             if ($this->categoryModel->getByName($name)) {
                 return [
                     'view' => 'back/categories/create.php',
-                    'data' => ['error' => 'Cette catégorie existe déjà']
+                    'data' => [
+                        'error' => 'Cette catégorie existe déjà',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
@@ -62,7 +68,7 @@ class CategoryController {
 
         return [
             'view' => 'back/categories/create.php',
-            'data' => []
+            'data' => ['suppress_global_alert' => true]
         ];
     }
 
@@ -77,7 +83,11 @@ class CategoryController {
             if (empty($name)) {
                 return [
                     'view' => 'back/categories/edit.php',
-                    'data' => ['error' => 'Le nom de la catégorie est requis', 'id' => $id]
+                    'data' => [
+                        'error' => 'Le nom de la catégorie est requis',
+                        'id' => $id,
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
@@ -86,7 +96,11 @@ class CategoryController {
             if ($existing && $existing['id'] != $id) {
                 return [
                     'view' => 'back/categories/edit.php',
-                    'data' => ['error' => 'Cette catégorie existe déjà', 'id' => $id]
+                    'data' => [
+                        'error' => 'Cette catégorie existe déjà',
+                        'id' => $id,
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
@@ -109,7 +123,11 @@ class CategoryController {
 
         return [
             'view' => 'back/categories/edit.php',
-            'data' => ['category' => $category, 'id' => $id]
+            'data' => [
+                'category' => $category,
+                'id' => $id,
+                'suppress_global_alert' => true
+            ]
         ];
     }
 
