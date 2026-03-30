@@ -1,5 +1,17 @@
 <div class="admin-create">
     <h1>Créer un nouvel article</h1>
+
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger form-alert">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success form-alert">
+            <?php echo htmlspecialchars($success); ?>
+        </div>
+    <?php endif; ?>
     
     <script src="/assets/js/tinymce/tinymce.min.js"></script>
     <script>
@@ -41,6 +53,12 @@
         <div class="form-group">
             <label for="content">Contenu:</label>
             <textarea id="content" name="content" rows="12"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="images_alt_text">Texte alternatif des images:</label>
+            <input type="text" id="images_alt_text" name="images_alt_text" maxlength="255" placeholder="Ex: Vue generale de la manifestation">
+            <small>Ce texte sera applique a toutes les images ajoutees.</small>
         </div>
 
         <div class="form-group">

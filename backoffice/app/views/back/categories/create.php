@@ -1,5 +1,17 @@
 <div class="admin-create">
     <h1>Créer une nouvelle catégorie</h1>
+
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger form-alert">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success form-alert">
+            <?php echo htmlspecialchars($success); ?>
+        </div>
+    <?php endif; ?>
     
     <form method="POST" class="category-form" accept-charset="UTF-8">
         <div class="form-group">

@@ -64,6 +64,12 @@ try {
             } elseif (strpos($action, 'news-delete-') === 0) {
                 $newsId = (int)str_replace('news-delete-', '', $action);
                 $result = $controller->newsDelete($newsId);
+            } elseif (strpos($action, 'media-update-') === 0) {
+                $mediaId = (int)str_replace('media-update-', '', $action);
+                $result = $controller->mediaUpdate($mediaId);
+            } elseif (strpos($action, 'media-delete-') === 0) {
+                $mediaId = (int)str_replace('media-delete-', '', $action);
+                $result = $controller->mediaDelete($mediaId);
             } elseif (strpos($action, 'news-toggle-publish-') === 0) {
                 $newsId = (int)str_replace('news-toggle-publish-', '', $action);
                 $result = $controller->newsTogglePublish($newsId);

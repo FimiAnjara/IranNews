@@ -126,7 +126,10 @@ class FrontController {
             if (empty($name) || empty($email) || empty($message)) {
                 return [
                     'view' => 'front/contact.php',
-                    'data' => array_merge($defaultMeta, ['error' => 'Tous les champs sont requis'])
+                    'data' => array_merge($defaultMeta, [
+                        'error' => 'Tous les champs sont requis',
+                        'suppress_global_alert' => true
+                    ])
                 ];
             }
 
@@ -138,13 +141,16 @@ class FrontController {
 
             return [
                 'view' => 'front/contact.php',
-                'data' => array_merge($defaultMeta, ['success' => 'Message envoyé avec succès'])
+                'data' => array_merge($defaultMeta, [
+                    'success' => 'Message envoyé avec succès',
+                    'suppress_global_alert' => true
+                ])
             ];
         }
 
         return [
             'view' => 'front/contact.php',
-            'data' => $defaultMeta
+            'data' => array_merge($defaultMeta, ['suppress_global_alert' => true])
         ];
     }
 

@@ -1,6 +1,18 @@
 <div class="auth-container">
     <form method="POST" class="auth-form" accept-charset="UTF-8">
         <h2>Inscription</h2>
+
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger form-alert">
+                <?php echo htmlspecialchars($error); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success form-alert">
+                <?php echo htmlspecialchars($success); ?>
+            </div>
+        <?php endif; ?>
         
         <div class="form-group">
             <label for="name">Nom:</label>
