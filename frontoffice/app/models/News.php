@@ -175,6 +175,58 @@ class News extends Model {
     }
 
     /**
+     * Récupère les articles récents (hors article courant)
+     */
+    public function getRecent($limit = 5, $excludeId = null) {
+        $sql = "
+            SELECT a.*, c.name as category_name
+            FROM articles a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.etat = 1 AND a.delete_at IS NULL
+        ";
+
+        if (!empty($excludeId)) {
+            $sql .= " AND a.id != :exclude_id";
+        }
+
+        $sql .= " ORDER BY a.published_at DESC LIMIT :limit";
+
+        $this->db->query($sql);
+        if (!empty($excludeId)) {
+            $this->db->bind(':exclude_id', (int)$excludeId, PDO::PARAM_INT);
+        }
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
+     * Récupère les articles récents d'une catégorie (hors article courant)
+     */
+    public function getRecentByCategoryId($categoryId, $limit = 6, $excludeId = null) {
+        $sql = "
+            SELECT a.*, c.name as category_name
+            FROM articles a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.etat = 1 AND a.delete_at IS NULL
+              AND a.category_id = :category_id
+        ";
+
+        if (!empty($excludeId)) {
+            $sql .= " AND a.id != :exclude_id";
+        }
+
+        $sql .= " ORDER BY a.published_at DESC LIMIT :limit";
+
+        $this->db->query($sql);
+        $this->db->bind(':category_id', (int)$categoryId, PDO::PARAM_INT);
+        if (!empty($excludeId)) {
+            $this->db->bind(':exclude_id', (int)$excludeId, PDO::PARAM_INT);
+        }
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
      * Créer un nouvel article
      */
     public function create($title, $content, $userId, $categoryId = null, $description = null, $etat = 1, $autor = null) {

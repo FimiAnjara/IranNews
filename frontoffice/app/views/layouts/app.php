@@ -18,37 +18,30 @@
     <nav class="navbar" role="navigation" aria-label="Navigation principale">
         <div class="container">
             <div class="navbar-brand">
-                <a href="<?php echo url('accueil'); ?>"><?php echo APP_NAME; ?></a>
+                <a href="<?php echo url(''); ?>"><?php echo APP_NAME; ?></a>
             </div>
             <ul class="navbar-menu">
-                <li><a href="<?php echo url('accueil'); ?>">Accueil</a></li>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <!-- Dropdown Gestion des Articles -->
-                    <li class="dropdown">
-                        <span class="dropdown-toggle">Articles</span>
-                        <ul class="dropdown-menu">
-                            <li><a href="<?php echo adminUrl('news-list'); ?>">Gestion des articles</a></li>
-                            <li><a href="<?php echo adminUrl('news-create'); ?>">Créer un article</a></li>
-                        </ul>
-                    </li>
-                    
-                    <!-- Dropdown Gestion des Catégories -->
-                    <li class="dropdown">
-                        <span class="dropdown-toggle">Catégories</span>
-                        <ul class="dropdown-menu">
-                            <li><a href="<?php echo adminUrl('categories-list'); ?>">Gestion des catégories</a></li>
-                            <li><a href="<?php echo adminUrl('categories-create'); ?>">Créer une catégorie</a></li>
-                        </ul>
-                    </li>
-                    
-                    <li><a href="<?php echo backUrl('deconnexion'); ?>">Déconnexion</a></li>
+                <li><a href="<?php echo url(''); ?>">Accueil</a></li>
+                <?php if (!empty($data['nav_categories']) && is_array($data['nav_categories'])): ?>
+                    <?php foreach ($data['nav_categories'] as $category): ?>
+                        <li>
+                            <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
+                                <?php echo htmlspecialchars($category['name'] ?? ''); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                 <?php endif; ?>
+                <li>
+                    <button class="search-toggle" type="button" aria-controls="searchBar" aria-expanded="false">
+                        Recherche
+                    </button>
+                </li>
             </ul>
         </div>
     </nav>
 
     <!-- Search Bar -->
-    <div class="search-bar">
+    <div class="search-bar" id="searchBar">
         <div class="container">
             <form method="GET" action="/recherche" onsubmit="this.action = '/recherche-' + document.querySelector('input[name=q]').value; return true;">
                 <input type="text" name="q" placeholder="Rechercher un article..." required>

@@ -1,5 +1,5 @@
 <section class="category-view">
-    <h1>Catégorie: <?php echo htmlspecialchars($category ?? ''); ?></h1>
+    <h1> <?php echo htmlspecialchars($category ?? ''); ?></h1>
 
     <?php if (empty($news)): ?>
         <p>Aucun article dans cette catégorie.</p>
@@ -21,8 +21,4 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-
-    <div class="back-link">
-        <a href="<?php echo url('accueil'); ?>">← Retour à l'accueil</a>
-    </div>
 </section>

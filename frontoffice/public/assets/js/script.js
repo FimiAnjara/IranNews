@@ -1,6 +1,9 @@
 // JavaScript simple pour le site
 
 document.addEventListener('DOMContentLoaded', function() {
+    const searchToggle = document.querySelector('.search-toggle');
+    const searchBar = document.getElementById('searchBar');
+
     // Confirmation de suppression
     const deleteLinks = document.querySelectorAll('.delete-link');
     deleteLinks.forEach(link => {
@@ -10,6 +13,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    if (searchToggle && searchBar) {
+        const searchInput = searchBar.querySelector('input[name="q"]');
+
+        const closeSearch = () => {
+            searchBar.classList.remove('is-open');
+            searchBar.style.display = 'none';
+            searchToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        searchToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = searchBar.classList.toggle('is-open');
+            searchBar.style.display = isOpen ? 'block' : 'none';
+            searchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (isOpen && searchInput) {
+                searchInput.focus();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!searchBar.contains(event.target) && !searchToggle.contains(event.target)) {
+                closeSearch();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeSearch();
+            }
+        });
+    }
 
     // Validation des formulaires
     const forms = document.querySelectorAll('form');

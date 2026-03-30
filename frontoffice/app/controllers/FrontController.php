@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/News.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Category.php';
 
 class FrontController {
     private $newsModel;
@@ -12,17 +13,36 @@ class FrontController {
     }
 
     public function home() {
-        $pageNum = (int)($_GET['p'] ?? 1);  // Utilisez 'p' pour la pagination, pas 'page'
-        $limit = 10;
-        $offset = ($pageNum - 1) * $limit;
-        
-        $news = $this->newsModel->getAll($limit, $offset);
-        
+        $categoryModel = new Category();
+        $categories = $categoryModel->getMenuCategories();
+        $categorySections = [];
+
+        foreach ($categories as $category) {
+            $categoryKey = $category['slug'] ?? $category['name'] ?? '';
+            if ($categoryKey === '') {
+                continue;
+            }
+
+            $articles = $this->newsModel->getByCategory($categoryKey, 5, 0);
+            if (empty($articles)) {
+                continue;
+            }
+
+            foreach ($articles as &$article) {
+                $article['image'] = $this->newsModel->getFirstImage($article['id']);
+            }
+            unset($article);
+
+            $categorySections[] = [
+                'category' => $category,
+                'articles' => $articles,
+            ];
+        }
+
         return [
             'view' => 'front/home.php',
             'data' => [
-                'news' => $news,
-                'page' => $pageNum,
+                'category_sections' => $categorySections,
                 'page_title' => 'Actualités Iran - IranNews',
                 'meta_description' => 'Actualités en temps réel sur la situation en Iran. Analyses, reportages et chronologies détaillées des événements géopolitiques.'
             ]
@@ -41,6 +61,21 @@ class FrontController {
         
         $this->newsModel->incrementViews($id);
         
+        $recentPosts = $this->newsModel->getRecent(5, $id);
+        foreach ($recentPosts as &$recent) {
+            $recent['image'] = $this->newsModel->getFirstImage($recent['id']);
+        }
+        unset($recent);
+
+        $relatedNews = [];
+        if (!empty($news['category_id'])) {
+            $relatedNews = $this->newsModel->getRecentByCategoryId($news['category_id'], 6, $id);
+            foreach ($relatedNews as &$related) {
+                $related['image'] = $this->newsModel->getFirstImage($related['id']);
+            }
+            unset($related);
+        }
+
         // Extraire un résumé du contenu pour la meta description
         $excerpt = strip_tags($news['description'] ?? $news['content']);
         $excerpt = substr($excerpt, 0, 160);
@@ -49,6 +84,8 @@ class FrontController {
             'view' => 'front/news/show.php',
             'data' => [
                 'news' => $news,
+                'recent_posts' => $recentPosts,
+                'related_news' => $relatedNews,
                 'page_title' => htmlspecialchars($news['title']) . ' - IranNews',
                 'meta_description' => htmlspecialchars($excerpt)
             ]
@@ -68,7 +105,7 @@ class FrontController {
                 'news' => $news,
                 'category' => $category,
                 'page' => $pageNum,
-                'page_title' => 'Catégorie: ' . htmlspecialchars($category) . ' - IranNews',
+                'page_title' =>  htmlspecialchars($category) . ' - IranNews',
                 'meta_description' => 'Articles et actualités dans la catégorie ' . htmlspecialchars($category) . ' sur la situation en Iran.'
             ]
         ];
@@ -89,6 +126,11 @@ class FrontController {
         $offset = ($pageNum - 1) * $limit;
         
         $news = $this->newsModel->search($query, $limit, $offset);
+
+        foreach ($news as &$article) {
+            $article['image'] = $this->newsModel->getFirstImage($article['id']);
+        }
+        unset($article);
         
         return [
             'view' => 'front/search.php',

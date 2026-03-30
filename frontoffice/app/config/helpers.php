@@ -58,7 +58,7 @@ function articleUrl($id, $slug = null) {
  */
 function categoryUrl($category) {
     $base = defined('APP_BASE_URL') ? APP_BASE_URL : '';
-    return buildUrl($base, '/categorie-' . slugify($category));
+    return buildUrl($base, '/' . slugify($category));
 }
 
 /**
