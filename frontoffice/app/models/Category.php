@@ -43,6 +43,21 @@ class Category extends Model {
     }
 
     /**
+     * Récupère les catégories à afficher dans le menu
+     */
+    public function getMenuCategories() {
+        $this->db->query("
+            SELECT id, name, slug
+            FROM categories
+            WHERE delete_at IS NULL
+              AND (show_menu = 1 OR show_menu IS NULL)
+            ORDER BY order_menu ASC, name ASC
+        ");
+
+        return $this->db->resultSet();
+    }
+
+    /**
      * Récupère une catégorie par slug
      */
     public function getBySlug($slug) {

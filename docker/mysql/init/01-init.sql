@@ -27,6 +27,10 @@ CREATE TABLE categories (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+alter table categories add column show_menu int default 1 after slug;
+alter table categories add column delete_at timestamp null default null after created_at;
+alter table categories add column order_menu int default 0 after delete_at;
+
 -- CREATE TABLE articles
 CREATE TABLE articles (
   id INT AUTO_INCREMENT PRIMARY KEY,

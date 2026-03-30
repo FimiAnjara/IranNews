@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../controllers/FrontController.php';
+require_once __DIR__ . '/../models/Category.php';
 
 // Les parametres GET sont geres par .htaccess
 $page = $_GET['page'] ?? 'accueil';
@@ -112,6 +113,13 @@ try {
 
     // Charger la vue
     if ($view && file_exists(__DIR__ . '/../views/' . $view)) {
+        if (!is_array($data)) {
+            $data = [];
+        }
+
+        $categoryModel = new Category();
+        $data['nav_categories'] = $categoryModel->getMenuCategories();
+
         extract($data);
 
         // Charger la vue dans un buffer
