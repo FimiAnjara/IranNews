@@ -14,8 +14,9 @@
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Passer au contenu</a>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Navigation principale">
         <div class="container">
             <div class="navbar-brand">
                 <a href="<?php echo url('accueil'); ?>"><?php echo APP_NAME; ?></a>
@@ -58,7 +59,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container">
+    <main id="main-content" class="container" role="main">
         <?php if (isset($data['error'])): ?>
             <div class="alert alert-danger">
                 <?php echo htmlspecialchars($data['error']); ?>

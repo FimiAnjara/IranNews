@@ -25,12 +25,12 @@
 
     <section class="home-main">
         <div class="home-header-row">
-            <div class="hero">
+            <div class="hero" role="banner">
                 <h1>Actualités sur l'Iran</h1>
                 <p>Les dernières informations et analyses en temps réel</p>
             </div>
-            <button class="drawer-toggle" id="filterToggle" aria-label="Ouvrir les filtres">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="drawer-toggle" id="filterToggle" aria-controls="categoriesSidebar" aria-expanded="false">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <line x1="4" y1="6" x2="20" y2="6"></line>
                     <line x1="4" y1="12" x2="20" y2="12"></line>
                     <line x1="4" y1="18" x2="20" y2="18"></line>
@@ -39,9 +39,65 @@
             </button>
         </div>
 
-        <main class="news-container" id="newsContainer">
-            <div class="articles-loading">Chargement des articles...</div>
-        </main>
+        <section class="news-container" id="newsContainer" aria-live="polite" aria-atomic="true">
+            <?php if (!empty($news) && is_array($news)): ?>
+                <?php
+                $featured = $news[0];
+                $featuredImage = $featured['image'] ?? null;
+                $featuredSlug = !empty($featured['slug']) ? '-' . htmlspecialchars($featured['slug']) : '';
+                ?>
+                <article class="featured-article" aria-label="Article à la une">
+                    <div class="featured-card">
+                        <?php if (!empty($featuredImage)): ?>
+                            <div class="featured-image">
+                                <img src="<?php echo htmlspecialchars($featuredImage['url'] ?? ''); ?>" alt="<?php echo htmlspecialchars($featured['title'] ?? ''); ?>">
+                            </div>
+                        <?php endif; ?>
+                        <div class="featured-content">
+                            <h2><a href="/article-<?php echo htmlspecialchars($featured['id']); ?><?php echo $featuredSlug; ?>"><?php echo htmlspecialchars($featured['title']); ?></a></h2>
+                            <p class="featured-meta">
+                                <span class="author">Par <?php echo htmlspecialchars($featured['autor'] ?? 'Admin'); ?></span>
+                                <span class="separator">•</span>
+                                <time datetime="<?php echo htmlspecialchars($featured['published_at'] ?? $featured['created_at'] ?? ''); ?>"><?php echo htmlspecialchars(date('d F Y', strtotime($featured['published_at'] ?? $featured['created_at'] ?? ''))); ?></time>
+                            </p>
+                            <p class="featured-excerpt"><?php echo htmlspecialchars(substr($featured['description'] ?? $featured['content'] ?? '', 0, 260)); ?>...</p>
+                            <a href="/article-<?php echo htmlspecialchars($featured['id']); ?><?php echo $featuredSlug; ?>" class="btn btn-primary">Lire l'article</a>
+                        </div>
+                    </div>
+                </article>
+
+                <?php if (count($news) > 1): ?>
+                    <section class="news-section" aria-label="Articles récents">
+                        <h2>Articles</h2>
+                        <div class="news-grid">
+                            <?php foreach (array_slice($news, 1) as $article): ?>
+                                <?php $img = $article['image'] ?? null; ?>
+                                <article class="news-card">
+                                    <?php if (!empty($img)): ?>
+                                        <div class="news-card-image">
+                                            <img src="<?php echo htmlspecialchars($img['url'] ?? ''); ?>" alt="<?php echo htmlspecialchars($article['title'] ?? ''); ?>">
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="news-card-content">
+                                        <?php $articleSlug = !empty($article['slug']) ? '-' . htmlspecialchars($article['slug']) : ''; ?>
+                                        <h3><a href="/article-<?php echo htmlspecialchars($article['id']); ?><?php echo $articleSlug; ?>"><?php echo htmlspecialchars($article['title']); ?></a></h3>
+                                        <p class="news-meta">
+                                            <span class="author">Par <?php echo htmlspecialchars($article['autor'] ?? 'Admin'); ?></span>
+                                            <span class="separator">•</span>
+                                            <time datetime="<?php echo htmlspecialchars($article['published_at'] ?? $article['created_at'] ?? ''); ?>"><?php echo htmlspecialchars(date('d M Y', strtotime($article['published_at'] ?? $article['created_at'] ?? ''))); ?></time>
+                                        </p>
+                                        <p class="news-excerpt"><?php echo htmlspecialchars(substr($article['description'] ?? $article['content'] ?? '', 0, 140)); ?>...</p>
+                                    </div>
+                                </article>
+                            <?php endforeach; ?>
+                        </div>
+                    </section>
+                <?php endif; ?>
+            <?php else: ?>
+                <div class="articles-loading">Chargement des articles...</div>
+            <?php endif; ?>
+            <div class="pagination"><span class="page-info">Page 1</span></div>
+        </section>
     </section>
 </div>
 
@@ -56,11 +112,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Drawer toggle
     filterToggle.addEventListener('click', () => {
+        const expanded = filterToggle.getAttribute('aria-expanded') === 'true';
+        filterToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
         sidebar.classList.add('open');
         drawerOverlay.classList.add('visible');
     });
 
     filterClose.addEventListener('click', () => {
+        filterToggle.setAttribute('aria-expanded', 'false');
         sidebar.classList.remove('open');
         drawerOverlay.classList.remove('visible');
     });
@@ -114,13 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success && data.data) {
                     renderNews(data.data);
-
-                    // Mettre à jour l'URL
-                    if (category !== 'all') {
-                        history.pushState(null, '', `/?category=${category}&p=${page}`);
-                    } else {
-                        history.pushState(null, '', `/?p=${page}`);
-                    }
                 } else {
                     newsContainer.innerHTML = '<p class="no-articles">Aucun article disponible pour le moment.</p>';
                 }
@@ -143,19 +195,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Article en vedette (premier)
         const featured = articles[0];
         const featImage = featured.image ? featured.image.url : '';
+        const featuredSlug = featured.slug ? `-${featured.slug}` : '';
         html += `
             <section class="featured-article">
                 <article class="featured-card">
                     ${featImage ? `<div class="featured-image"><img src="${featImage}" alt="${featured.title}" class="featured-img"></div>` : ''}
                     <div class="featured-content">
-                        <h2><a href="/index.php?page=article&id=${featured.id}">${featured.title}</a></h2>
+                        <h2><a href="/article-${featured.id}${featuredSlug}">${featured.title}</a></h2>
                         <p class="featured-meta">
                             <span class="author">Par ${featured.autor || 'Admin'}</span>
                             <span class="separator">•</span>
                             <time>${new Date(featured.published_at || featured.created_at).toLocaleDateString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'})}</time>
                         </p>
                         <p class="featured-excerpt">${(featured.description || featured.content).substring(0, 300)}...</p>
-                        <a href="/index.php?page=article&id=${featured.id}" class="btn btn-primary">Lire l'article</a>
+                        <a href="/article-${featured.id}${featuredSlug}" class="btn btn-primary">Lire l'article</a>
                     </div>
                 </article>
             </section>
@@ -168,11 +221,12 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 1; i < articles.length; i++) {
                 const article = articles[i];
                 const img = article.image ? article.image.url : '';
+                const articleSlug = article.slug ? `-${article.slug}` : '';
                 html += `
                     <article class="news-card">
                         ${img ? `<div class="news-card-image"><img src="${img}" alt="${article.title}" class="card-img"></div>` : ''}
                         <div class="news-card-content">
-                            <h3><a href="/index.php?page=article&id=${article.id}">${article.title}</a></h3>
+                            <h3><a href="/article-${article.id}${articleSlug}">${article.title}</a></h3>
                             <p class="news-meta">
                                 <span class="author">Par ${article.autor || 'Admin'}</span>
                                 <span class="separator">•</span>
