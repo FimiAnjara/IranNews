@@ -1,6 +1,17 @@
 <div class="admin-create">
     <h1>Créer un nouvel article</h1>
     
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            license_key: 'gpl',
+            height: 400,
+            plugins: ['link', 'image', 'lists', 'code', 'preview'],
+            toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code preview'
+        });
+    </script>
+    
     <form method="POST" class="article-form">
         <div class="form-group">
             <label for="title">Titre:</label>
@@ -8,16 +19,21 @@
         </div>
 
         <div class="form-group">
-            <label for="category">Catégorie:</label>
-            <select id="category" name="category">
+            <label for="category_id">Catégorie:</label>
+            <select id="category_id" name="category_id">
                 <option value="">-- Sélectionner une catégorie --</option>
-                <option value="Général">Général</option>
-                <option value="Politique">Politique</option>
-                <option value="Économie">Économie</option>
-                <option value="Culture">Culture</option>
-                <option value="Sport">Sport</option>
-                <option value="Science">Science</option>
+                <option value="1">Général</option>
+                <option value="2">Politique</option>
+                <option value="3">Économie</option>
+                <option value="4">Culture</option>
+                <option value="5">Sport</option>
+                <option value="6">Science</option>
             </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="3" placeholder="Courte description de l'article"></textarea>
         </div>
 
         <div class="form-group">

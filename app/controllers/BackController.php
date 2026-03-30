@@ -14,7 +14,7 @@ class BackController {
 
     private function checkAuth() {
         if (!isset($_SESSION['user_id'])) {
-            header('Location: index.php?page=connexion');
+            header('Location: ' . url('connexion'));
             exit;
         }
     }
@@ -36,9 +36,9 @@ class BackController {
     }
 
     public function newsList() {
-        $page = $_GET['page'] ?? 1;
+        $pageNum = (int)($_GET['p'] ?? 1);
         $limit = 10;
-        $offset = ($page - 1) * $limit;
+        $offset = ($pageNum - 1) * $limit;
         
         $news = $this->newsModel->getAll($limit, $offset);
         
@@ -46,7 +46,7 @@ class BackController {
             'view' => 'back/news/list.php',
             'data' => [
                 'news' => $news,
-                'page' => $page,
+                'page' => $pageNum,
                 'limit' => $limit
             ]
         ];
@@ -119,7 +119,7 @@ class BackController {
 
     public function newsDelete($id) {
         $this->newsModel->delete($id);
-        header('Location: index.php?page=admin&action=news-list');
+        header('Location: ' . adminUrl('news-list'));
         exit;
     }
 

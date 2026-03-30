@@ -20,11 +20,9 @@
                 <li><a href="<?php echo url('a-propos'); ?>">À propos</a></li>
                 <li><a href="<?php echo url('contact'); ?>">Contact</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <li><a href="<?php echo adminUrl('dashboard'); ?>">Tableau de bord</a></li>
-                    <li><a href="<?php echo url('deconnexion'); ?>">Déconnexion</a></li>
-                <?php else: ?>
-                    <li><a href="<?php echo url('connexion'); ?>">Connexion</a></li>
-                    <li><a href="<?php echo url('inscription'); ?>">Inscription</a></li>
+                    <li><a href="<?php echo adminUrl('news-list'); ?>">Gestion des articles</a></li>
+                    <li><a href="<?php echo adminUrl('news-create'); ?>">Créer un article</a></li>
+                    <li><a href="<?php echo adminUrl('deconnexion'); ?>">Déconnexion</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -33,8 +31,7 @@
     <!-- Search Bar -->
     <div class="search-bar">
         <div class="container">
-            <form method="GET" action="index.php">
-                <input type="hidden" name="page" value="recherche">
+            <form method="GET" action="/recherche" onsubmit="this.action = '/recherche-' + document.querySelector('input[name=q]').value; return true;">
                 <input type="text" name="q" placeholder="Rechercher un article..." required>
                 <button type="submit">Rechercher</button>
             </form>

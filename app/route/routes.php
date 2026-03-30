@@ -92,7 +92,7 @@ try {
         // Administration
         case 'admin':
             if (!isset($_SESSION['user_id'])) {
-                header('Location: index.php?page=connexion');
+                header('Location: /');
                 exit;
             }
             $controller = new BackController();

@@ -27,7 +27,7 @@ class AuthController {
                 $_SESSION['name'] = $user['name'];
                 $_SESSION['email'] = $user['email'];
 
-                header('Location: index.php?page=admin&action=dashboard');
+                header('Location: /admin-news-list');
                 exit;
             }
 
@@ -38,7 +38,7 @@ class AuthController {
         }
 
         if (isset($_SESSION['user_id'])) {
-            header('Location: index.php?page=admin&action=dashboard');
+            header('Location: /admin-news-list');
             exit;
         }
 
@@ -51,7 +51,7 @@ class AuthController {
     public function logout() {
         $_SESSION = [];
         session_destroy();
-        header('Location: index.php');
+        header('Location: /');
         exit;
     }
 
