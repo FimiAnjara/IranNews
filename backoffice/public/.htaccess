@@ -1,0 +1,23 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+# Exemption pour les uploads partages (alias Apache)
+RewriteCond %{REQUEST_URI} ^/uploads/
+RewriteRule ^ - [L]
+
+# Ne pas rewriter les fichiers et dossiers existants
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Bloquer l'acces direct aux dossiers sensibles
+RewriteRule ^(app|config|database|docker|backoffice|frontoffice) - [F,L]
+
+# Auth
+RewriteRule ^(connexion|inscription|deconnexion)/?$ index.php?page=$1 [L,QSA]
+
+# Admin: /admin-dashboard, /admin-news-list, etc
+RewriteRule ^admin-([a-z0-9-]+)/?$ index.php?page=admin&action=$1 [L,QSA]
+
+# Rediriger vers index.php par defaut si rien ne correspond
+RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]

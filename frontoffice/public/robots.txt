@@ -1,0 +1,23 @@
+# robots.txt for IranNews
+# Politique de crawl pour les moteurs de recherche
+
+User-agent: *
+Allow: /
+Allow: /accueil
+Allow: /article-*
+Allow: /categorie-*
+Allow: /recherche-*
+Allow: /assets/
+
+# Désactiver certains répertoires
+Disallow: /admin
+Disallow: /app
+Disallow: /vendor
+Disallow: /docker
+Disallow: /uploads
+
+# Respect du délai de crawl
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: http://localhost:8050/sitemap.xml
