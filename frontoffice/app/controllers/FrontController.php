@@ -98,6 +98,11 @@ class FrontController {
         $offset = ($pageNum - 1) * $limit;
         
         $news = $this->newsModel->getByCategory($category, $limit, $offset);
+
+        foreach ($news as &$article) {
+            $article['image'] = $this->newsModel->getFirstImage($article['id']);
+        }
+        unset($article);
         
         return [
             'view' => 'front/category.php',

@@ -47,17 +47,21 @@
 
                     <!-- Galerie d'images si présentes -->
                     <?php if (!empty($images)): ?>
-                        <div class="article-gallery">
-                            <?php foreach ($images as $image): ?>
-                                <div class="gallery-item">
-                                    <img src="<?php echo htmlspecialchars($image['url']); ?>" 
-                                         alt="<?php echo htmlspecialchars($image['alt_text'] ?? 'Image article'); ?>"
-                                         class="gallery-image">
-                                    <?php if ($image['alt_text']): ?>
-                                        <p class="gallery-caption"><?php echo htmlspecialchars($image['alt_text']); ?></p>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
+                        <?php $hasMultipleImages = count($images) > 1; ?>
+                        <div class="article-gallery<?php echo $hasMultipleImages ? ' gallery-slider' : ''; ?>"<?php echo $hasMultipleImages ? ' data-gallery="slider"' : ''; ?>>
+                            <?php if ($hasMultipleImages): ?>
+                                <button class="gallery-nav prev" type="button" aria-label="Image precedente">&#x2039;</button>
+                                <button class="gallery-nav next" type="button" aria-label="Image suivante">&#x203A;</button>
+                            <?php endif; ?>
+                            <div class="gallery-track">
+                                <?php foreach ($images as $image): ?>
+                                    <div class="gallery-item">
+                                        <img src="<?php echo htmlspecialchars($image['url']); ?>" 
+                                             alt="<?php echo htmlspecialchars($image['alt_text'] ?? 'Image article'); ?>"
+                                             class="gallery-image">
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     <?php endif; ?>
 
@@ -116,31 +120,28 @@
 
         <aside class="article-sidebar" aria-label="Articles recents">
             <?php if (!empty($recent_posts)): ?>
-                <div class="sidebar-card">
-                    <h3>Articles recents</h3>
-                    <ul class="recent-list">
-                        <?php foreach ($recent_posts as $recent): ?>
-                            <?php
-                            $recentSlug = !empty($recent['slug']) ? '-' . htmlspecialchars($recent['slug']) : '';
-                            $recentImage = $recent['image'] ?? null;
-                            ?>
-                            <li class="recent-item">
-                                <?php if (!empty($recentImage['url'])): ?>
-                                    <a class="recent-thumb" href="/article-<?php echo htmlspecialchars($recent['id']); ?><?php echo $recentSlug; ?>">
-                                        <img src="<?php echo htmlspecialchars($recentImage['url']); ?>" alt="<?php echo htmlspecialchars($recent['title']); ?>">
-                                    </a>
+                <div class="story-stack">
+                    <p class="section-title">Articles recents</p>
+                    <?php foreach ($recent_posts as $recent): ?>
+                        <?php
+                        $recentSlug = !empty($recent['slug']) ? '-' . htmlspecialchars($recent['slug']) : '';
+                        $recentUpdated = $recent['updated_at'] ?? null;
+                        $recentUpdateTime = !empty($recentUpdated) ? date('H:i', strtotime($recentUpdated)) : null;
+                        ?>
+                        <article class="story-item">
+                            <h3><a href="/article-<?php echo htmlspecialchars($recent['id']); ?><?php echo $recentSlug; ?>"><?php echo htmlspecialchars($recent['title']); ?></a></h3>
+                            <p class="story-meta">
+                                <span class="author">Par <?php echo htmlspecialchars($recent['autor'] ?? 'Admin'); ?></span>
+                                <span class="separator">•</span>
+                                <time datetime="<?php echo htmlspecialchars($recent['published_at'] ?? $recent['created_at'] ?? ''); ?>"><?php echo htmlspecialchars(date('d M Y', strtotime($recent['published_at'] ?? $recent['created_at'] ?? ''))); ?></time>
+                                <?php if (!empty($recentUpdateTime)): ?>
+                                    <span class="separator">•</span>
+                                    <span class="update-time">Maj <?php echo htmlspecialchars($recentUpdateTime); ?></span>
                                 <?php endif; ?>
-                                <div class="recent-content">
-                                    <a href="/article-<?php echo htmlspecialchars($recent['id']); ?><?php echo $recentSlug; ?>">
-                                        <?php echo htmlspecialchars($recent['title']); ?>
-                                    </a>
-                                    <time datetime="<?php echo htmlspecialchars($recent['published_at'] ?? $recent['created_at'] ?? ''); ?>">
-                                        <?php echo htmlspecialchars(date('d M Y', strtotime($recent['published_at'] ?? $recent['created_at'] ?? ''))); ?>
-                                    </time>
-                                </div>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+                            </p>
+                            <p class="story-excerpt"><?php echo htmlspecialchars(substr($recent['description'] ?? $recent['content'] ?? '', 0, 120)); ?>...</p>
+                        </article>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </aside>

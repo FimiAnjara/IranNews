@@ -46,6 +46,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const galleries = document.querySelectorAll('.article-gallery[data-gallery="slider"]');
+    galleries.forEach((gallery) => {
+        const track = gallery.querySelector('.gallery-track');
+        const items = track ? Array.from(track.children) : [];
+        const prevButton = gallery.querySelector('.gallery-nav.prev');
+        const nextButton = gallery.querySelector('.gallery-nav.next');
+
+        if (!track || items.length < 2) {
+            return;
+        }
+
+        let index = 0;
+
+        items.forEach((item) => {
+            item.style.flex = '0 0 100%';
+        });
+
+        const update = () => {
+            const slideWidth = gallery.clientWidth;
+            track.style.transform = `translateX(-${index * slideWidth}px)`;
+        };
+
+        prevButton?.addEventListener('click', (event) => {
+            event.preventDefault();
+            index = (index - 1 + items.length) % items.length;
+            update();
+        });
+
+        nextButton?.addEventListener('click', (event) => {
+            event.preventDefault();
+            index = (index + 1) % items.length;
+            update();
+        });
+
+        update();
+        window.addEventListener('resize', update);
+    });
+
     // Validation des formulaires
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
