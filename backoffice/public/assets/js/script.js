@@ -1,0 +1,36 @@
+// JavaScript simple pour le site
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmation de suppression
+    const deleteLinks = document.querySelectorAll('.delete-link');
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!confirm('Êtes-vous sûr?')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Validation des formulaires
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const inputs = form.querySelectorAll('input[required], textarea[required]');
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = 'red';
+                    valid = false;
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                alert('Veuillez remplir tous les champs requis');
+            }
+        });
+    });
+});
