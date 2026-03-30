@@ -166,6 +166,15 @@ class News extends Model {
     }
 
     /**
+     * Compter tous les articles publiés
+     */
+    public function countAll() {
+        $this->db->query("SELECT COUNT(*) as total FROM articles WHERE etat = 1");
+        $result = $this->db->single();
+        return (int)$result['total'];
+    }
+
+    /**
      * Créer un nouvel article
      */
     public function create($title, $content, $userId, $categoryId = null, $description = null, $etat = 1, $autor = null) {
@@ -310,21 +319,6 @@ class News extends Model {
         return $this->db->resultSet();
     }
 
-    /**
-     * Mettre à jour le statut de publication d'un article
-     */
-    public function updateStatus($id, $status) {
-        $sql = "UPDATE articles SET etat = :status, updated_at = NOW()";
-        if ($status == 1) {
-            $sql .= ", published_at = NOW()";
-        }
-        $sql .= " WHERE id = :id AND delete_at IS NULL";
-        
-        $this->db->query($sql);
-        $this->db->bind(':status', (int)$status, PDO::PARAM_INT);
-        $this->db->bind(':id', (int)$id, PDO::PARAM_INT);
-        return $this->db->execute();
-    }
 
     /**
      * Récupérer toutes les images d'un article
@@ -339,17 +333,4 @@ class News extends Model {
         return $this->db->resultSet();
     }
 
-    /**
-     * Insérer une image dans la table media
-     */
-    public function insertImage($articleId, $url, $altText = null) {
-        $this->db->query("
-            INSERT INTO media (article_id, url, alt_text, created_at)
-            VALUES (:article_id, :url, :alt_text, NOW())
-        ");
-        $this->db->bind(':article_id', (int)$articleId, PDO::PARAM_INT);
-        $this->db->bind(':url', $url);
-        $this->db->bind(':alt_text', $altText);
-        return $this->db->execute();
-    }
 }

@@ -15,15 +15,13 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Navigation principale">
         <div class="container">
             <div class="navbar-brand">
                 <a href="<?php echo url('accueil'); ?>"><?php echo APP_NAME; ?></a>
             </div>
             <ul class="navbar-menu">
                 <li><a href="<?php echo url('accueil'); ?>">Accueil</a></li>
-                <li><a href="<?php echo url('a-propos'); ?>">À propos</a></li>
-                <li><a href="<?php echo url('contact'); ?>">Contact</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <!-- Dropdown Gestion des Articles -->
                     <li class="dropdown">
@@ -60,7 +58,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container">
+    <main class="container" class="container" role="main">
         <?php if (empty($data['suppress_global_alert'])): ?>
             <?php if (isset($data['error'])): ?>
                 <div class="alert alert-danger">

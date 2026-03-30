@@ -17,17 +17,28 @@ class Category extends Model {
     }
 
     /**
-     * Récupère toutes les catégories avec le compte d'articles
+     * Récupère toutes les catégories avec le compte d'articles (option limitée pour performance)
      */
-    public function getAllWithArticleCount() {
-        $this->db->query("
+    public function getAllWithArticleCount($limit = null) {
+        $sql = "
             SELECT c.*,
                    COUNT(a.id) as article_count
             FROM categories c
             LEFT JOIN articles a ON a.category_id = c.id AND a.etat = 1
             GROUP BY c.id
             ORDER BY c.name ASC
-        ");
+        ";
+
+        if ($limit !== null && is_int($limit) && $limit > 0) {
+            $sql .= " LIMIT :limit";
+        }
+
+        $this->db->query($sql);
+
+        if ($limit !== null && is_int($limit) && $limit > 0) {
+            $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        }
+
         return $this->db->resultSet();
     }
 

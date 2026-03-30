@@ -153,4 +153,62 @@ class FrontController {
             'data' => array_merge($defaultMeta, ['suppress_global_alert' => true])
         ];
     }
+
+    /**
+     * API AJAX : Récupère les articles filtrés par catégorie avec pagination
+     */
+    public function getFilteredNews() {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $categoryId = $_GET['category'] ?? null;
+        $page = (int)($_GET['p'] ?? 1);
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $news = [];
+
+        // Si pas de catégorie spécifiée ou catégorie = "all", récupérer tous les articles
+        if (empty($categoryId) || $categoryId === 'all') {
+            $news = $this->newsModel->getAll($limit, $offset);
+        } else {
+            // Sinon, récupérer par catégorie
+            $news = $this->newsModel->getByCategory($categoryId, $limit, $offset);
+        }
+
+        // Récupérer les images pour chaque article
+        foreach ($news as &$article) {
+            $article['image'] = $this->newsModel->getFirstImage($article['id']);
+        }
+
+        return [
+            'success' => true,
+            'data' => $news
+        ];
+    }
+
+    /**
+     * API AJAX : Récupère toutes les catégories avec le nombre d'articles
+     */
+    public function getCategories() {
+        require_once __DIR__ . '/../models/Category.php';
+        header('Content-Type: application/json; charset=utf-8');
+
+        $categoryModel = new Category();
+
+        // Limiter à 10 catégories pour l'affichage initial (optimisation)
+        $categories = $categoryModel->getAllWithArticleCount(10);
+
+        // Nombre total d'articles publiés
+        $this->newsModel = new News();
+        $globalCount = $this->newsModel->countAll();
+
+        return [
+            'success' => true,
+            'data' => [
+                'categories' => $categories,
+                'total_count' => $globalCount,
+                'category_count' => count($categories)
+            ]
+        ];
+    }
 }
