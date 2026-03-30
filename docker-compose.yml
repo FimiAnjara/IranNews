@@ -68,11 +68,11 @@ services:
     networks:
       - irannews_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "-u", "root", "-proot_pass", "ping", "-h", "localhost"]
       timeout: 20s
-      retries: 30
+      retries: 60
       interval: 5s
-      start_period: 60s
+      start_period: 420s
     restart: unless-stopped
 
 volumes:

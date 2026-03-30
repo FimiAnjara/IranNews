@@ -44,7 +44,6 @@ CREATE TABLE articles (
   CONSTRAINT fk_articles_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-alter table articles add column delete_at timestamp null default null after updated_at;
 -- CREATE TABLE media
 CREATE TABLE media (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,7 +55,6 @@ CREATE TABLE media (
   CONSTRAINT fk_media_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-alter table media add column delete_at timestamp null default null after created_at;
 
 -- INSERT users d'abord
 INSERT INTO users (id, name, email, password_hash)
