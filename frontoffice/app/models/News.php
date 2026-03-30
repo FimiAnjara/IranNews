@@ -165,6 +165,15 @@ class News extends Model {
     }
 
     /**
+     * Compter tous les articles publiés
+     */
+    public function countAll() {
+        $this->db->query("SELECT COUNT(*) as total FROM articles WHERE etat = 1");
+        $result = $this->db->single();
+        return (int)$result['total'];
+    }
+
+    /**
      * Créer un nouvel article
      */
     public function create($title, $content, $userId, $categoryId = null, $description = null, $etat = 1, $autor = null) {

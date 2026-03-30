@@ -188,11 +188,21 @@ class FrontController {
         header('Content-Type: application/json; charset=utf-8');
 
         $categoryModel = new Category();
-        $categories = $categoryModel->getAllWithArticleCount();
+
+        // Limiter à 10 catégories pour l'affichage initial (optimisation)
+        $categories = $categoryModel->getAllWithArticleCount(10);
+
+        // Nombre total d'articles publiés
+        $this->newsModel = new News();
+        $globalCount = $this->newsModel->countAll();
 
         return [
             'success' => true,
-            'data' => $categories
+            'data' => [
+                'categories' => $categories,
+                'total_count' => $globalCount,
+                'category_count' => count($categories)
+            ]
         ];
     }
 }

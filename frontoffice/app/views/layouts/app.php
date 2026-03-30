@@ -22,8 +22,6 @@
             </div>
             <ul class="navbar-menu">
                 <li><a href="<?php echo url('accueil'); ?>">Accueil</a></li>
-                <li><a href="<?php echo url('a-propos'); ?>">À propos</a></li>
-                <li><a href="<?php echo url('contact'); ?>">Contact</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <!-- Dropdown Gestion des Articles -->
                     <li class="dropdown">

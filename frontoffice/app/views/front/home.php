@@ -1,26 +1,8 @@
-<div class="hero">
-    <h1>Actualités sur l'Iran</h1>
-    <p>Les dernières informations et analyses en temps réel</p>
-</div>
-
 <div class="home-wrapper">
-    <!-- Drawer Toggle Button (Mobile) -->
-    <button class="drawer-toggle" id="filterToggle" aria-label="Ouvrir les filtres">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="6" x2="20" y2="6"></line>
-            <line x1="4" y1="12" x2="20" y2="12"></line>
-            <line x1="4" y1="18" x2="20" y2="18"></line>
-        </svg>
-        Filtrer par catégorie
-    </button>
-
-    <!-- Drawer Overlay (Mobile) -->
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-
     <!-- Sidebar Gauche - Filtres Catégories -->
     <aside class="categories-sidebar" id="categoriesSidebar">
         <div class="sidebar-header">
-            <h3>Catégories</h3>
+            <h3>Filtres</h3>
             <button class="drawer-close" id="filterClose" aria-label="Fermer les filtres">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -39,11 +21,28 @@
             </div>
         </nav>
     </aside>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
 
-    <!-- Contenu Principal - Articles -->
-    <main class="news-container" id="newsContainer">
-        <div class="articles-loading">Chargement des articles...</div>
-    </main>
+    <section class="home-main">
+        <div class="home-header-row">
+            <div class="hero">
+                <h1>Actualités sur l'Iran</h1>
+                <p>Les dernières informations et analyses en temps réel</p>
+            </div>
+            <button class="drawer-toggle" id="filterToggle" aria-label="Ouvrir les filtres">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="18" x2="20" y2="18"></line>
+                </svg>
+                Filtrer par catégorie
+            </button>
+        </div>
+
+        <main class="news-container" id="newsContainer">
+            <div class="articles-loading">Chargement des articles...</div>
+        </main>
+    </section>
 </div>
 
 <script>
@@ -76,24 +75,31 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/index.php?page=api-categories')
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.data) {
+                if (data.success && data.data && Array.isArray(data.data.categories)) {
                     let html = '';
-                    data.data.forEach(cat => {
+                    data.data.categories.forEach(cat => {
                         html += `<a href="#" class="category-filter" data-category="${cat.slug}">
                             <span class="category-name">${cat.name}</span>
                             <span class="category-count">${cat.article_count}</span>
                         </a>`;
                     });
                     categoriesContainer.innerHTML = html;
+                    document.getElementById('count-all').innerText = data.data.total_count || 0;
                     attachCategoryListeners();
 
                     // Charger les articles
+                    loadNews('all');
+                } else {
+                    document.getElementById('count-all').innerText = '0';
+                    categoriesContainer.innerHTML = '<p>Aucune catégorie disponible.</p>';
                     loadNews('all');
                 }
             })
             .catch(err => {
                 console.error('Erreur chargement catégories:', err);
                 categoriesContainer.innerHTML = '<p style="color: #e94b3c;">Erreur de chargement</p>';
+                document.getElementById('count-all').innerText = '0';
+                loadNews('all');
             });
     }
 
