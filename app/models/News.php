@@ -20,6 +20,22 @@ class News extends Model {
     }
 
     /**
+     * Récupère tous les articles (pour l'admin) avec pagination
+     */
+    public function getAllForAdmin($limit = 10, $offset = 0) {
+        $this->db->query("
+            SELECT a.*, c.name as category_name
+            FROM articles a 
+            LEFT JOIN categories c ON a.category_id = c.id
+            ORDER BY a.published_at DESC 
+            LIMIT :limit OFFSET :offset
+        ");
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
      * Récupère un article par ID (publié seulement)
      */
     public function getById($id) {
@@ -28,6 +44,20 @@ class News extends Model {
             FROM articles a 
             LEFT JOIN categories c ON a.category_id = c.id
             WHERE a.id = :id AND a.etat = 1
+        ");
+        $this->db->bind(':id', $id, PDO::PARAM_INT);
+        return $this->db->single();
+    }
+
+    /**
+     * Récupère un article par ID (pour l'admin, y compris brouillons)
+     */
+    public function getByIdForAdmin($id) {
+        $this->db->query("
+            SELECT a.*, c.name as category_name, c.slug as category_slug
+            FROM articles a 
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.id = :id
         ");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->single();
@@ -137,29 +167,34 @@ class News extends Model {
     /**
      * Créer un nouvel article
      */
-    public function create($title, $content, $userId, $categoryId = null) {
+    public function create($title, $content, $userId, $categoryId = null, $description = null, $etat = 1, $autor = null) {
         $slug = $this->slugify($title);
+        if (empty($autor)) {
+            $autor = 'Admin';
+        }
         $this->db->query("
-            INSERT INTO articles (title, slug, content, autor, category_id, etat, published_at, created_at)
-            VALUES (:title, :slug, :content, :autor, :category_id, 1, NOW(), NOW())
+            INSERT INTO articles (title, slug, content, description, autor, category_id, etat, published_at, created_at)
+            VALUES (:title, :slug, :content, :description, :autor, :category_id, :etat, NOW(), NOW())
         ");
         $this->db->bind(':title', $title);
         $this->db->bind(':slug', $slug);
         $this->db->bind(':content', $content);
-        $this->db->bind(':autor', 'Admin');
+        $this->db->bind(':description', $description);
+        $this->db->bind(':autor', $autor);
         $this->db->bind(':category_id', $categoryId, PDO::PARAM_INT);
+        $this->db->bind(':etat', $etat, PDO::PARAM_INT);
         return $this->db->execute();
     }
 
     /**
      * Mettre à jour un article
      */
-    public function update($id, $title, $content, $categoryId = null, $description = null) {
+    public function update($id, $title, $content, $categoryId = null, $description = null, $etat = 1, $autor = null) {
         $slug = $this->slugify($title);
         $this->db->query("
             UPDATE articles 
             SET title = :title, slug = :slug, content = :content, description = :description,
-                category_id = :category_id, updated_at = NOW()
+                category_id = :category_id, etat = :etat, autor = :autor, updated_at = NOW()
             WHERE id = :id
         ");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
@@ -168,6 +203,8 @@ class News extends Model {
         $this->db->bind(':content', $content);
         $this->db->bind(':description', $description);
         $this->db->bind(':category_id', $categoryId, PDO::PARAM_INT);
+        $this->db->bind(':etat', $etat, PDO::PARAM_INT);
+        $this->db->bind(':autor', $autor);
         return $this->db->execute();
     }
 

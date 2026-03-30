@@ -2,26 +2,38 @@
 class User extends Model {
     protected static $table = 'users';
 
+    /**
+     * Récupère tous les utilisateurs (alias pour all())
+     */
     public function getAll() {
-        $this->db->query("SELECT id, name, email, created_at FROM users");
+        $this->db->query("SELECT id, name, email, created_at FROM " . static::$table);
         return $this->db->resultSet();
     }
 
+    /**
+     * Récupère un utilisateur par ID (alias pour find())
+     */
     public function getById($id) {
-        $this->db->query("SELECT id, name, email, created_at FROM users WHERE id = :id");
+        $this->db->query("SELECT id, name, email, created_at FROM " . static::$table . " WHERE id = :id");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         return $this->db->single();
     }
 
-    public function getByName($name) {
-        $this->db->query("SELECT * FROM users WHERE name = :name");
-        $this->db->bind(':name', $name);
-        return $this->db->single();
-    }
-
+    /**
+     * Récupère un utilisateur par email
+     */
     public function getByEmail($email) {
         $this->db->query("SELECT * FROM users WHERE email = :email");
         $this->db->bind(':email', $email);
+        return $this->db->single();
+    }
+
+    /**
+     * Récupère un utilisateur par nom
+     */
+    public function getByName($name) {
+        $this->db->query("SELECT * FROM users WHERE name = :name");
+        $this->db->bind(':name', $name);
         return $this->db->single();
     }
 

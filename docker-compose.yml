@@ -29,6 +29,7 @@ services:
       MYSQL_DATABASE: irannews
       MYSQL_USER: irannews_user
       MYSQL_PASSWORD: irannews_pass
+      MYSQL_INITDB_ARGS: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
     ports:
       - "3317:3306"
     volumes:

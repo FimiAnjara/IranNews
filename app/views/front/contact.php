@@ -1,7 +1,7 @@
 <div class="contact-page">
     <h1>Contactez-nous</h1>
     
-    <form method="POST" class="contact-form">
+    <form method="POST" class="contact-form" accept-charset="UTF-8">
         <div class="form-group">
             <label for="name">Nom:</label>
             <input type="text" id="name" name="name" required>

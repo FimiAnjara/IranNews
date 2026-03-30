@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../controllers/FrontController.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/BackController.php';
+require_once __DIR__ . '/../controllers/CategoryController.php';
 
 // Les paramètres GET sont gérés par .htaccess
 $page = $_GET['page'] ?? 'accueil';
@@ -66,6 +67,18 @@ try {
             $data = $result['data'];
             break;
 
+        // SEO
+        case 'sitemap':
+        case 'sitemap.xml':
+            // Rediriger vers le fichier PHP
+            header('Location: /sitemap.php');
+            exit;
+
+        case 'robots':
+        case 'robots.txt':
+            // robots.txt est un fichier statique, pas besoin de route
+            break;
+
         // Authentification
         case 'connexion':
         case 'login':
@@ -103,10 +116,28 @@ try {
                 $result = $controller->newsList();
             } elseif ($action === 'news-create') {
                 $result = $controller->newsCreate();
-            } elseif ($action === 'news-delete' && $id) {
-                $result = $controller->newsDelete($id);
+            } elseif (strpos($action, 'news-edit-') === 0) {
+                $newsId = (int)str_replace('news-edit-', '', $action);
+                $result = $controller->newsEdit($newsId);
+            } elseif (strpos($action, 'news-delete-') === 0) {
+                $newsId = (int)str_replace('news-delete-', '', $action);
+                $result = $controller->newsDelete($newsId);
             } elseif ($action === 'users-list') {
                 $result = $controller->usersList();
+            } elseif ($action === 'categories-list') {
+                $catController = new CategoryController();
+                $result = $catController->list();
+            } elseif ($action === 'categories-create') {
+                $catController = new CategoryController();
+                $result = $catController->create();
+            } elseif (strpos($action, 'categories-edit-') === 0) {
+                $catId = (int)str_replace('categories-edit-', '', $action);
+                $catController = new CategoryController();
+                $result = $catController->edit($catId);
+            } elseif (strpos($action, 'categories-delete-') === 0) {
+                $catId = (int)str_replace('categories-delete-', '', $action);
+                $catController = new CategoryController();
+                $result = $catController->delete($catId);
             } else {
                 $result = $controller->dashboard();
             }

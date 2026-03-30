@@ -59,13 +59,18 @@ function searchUrl($query) {
 
 /**
  * Génère une URL pour l'admin
- * URL: /admin-{action}
+ * URL: /admin-{action} ou /admin-{action}-{id}
  * 
- * @param string $action L'action admin (dashboard, news-list, etc.)
+ * @param string $action L'action admin (dashboard, news-list, news-edit, etc.)
+ * @param int|null $id L'ID optionnel
  * @return string URL admin
  */
-function adminUrl($action = 'dashboard') {
-    return '/admin-' . slugify($action);
+function adminUrl($action = 'dashboard', $id = null) {
+    $url = '/admin-' . slugify($action);
+    if ($id !== null) {
+        $url .= '-' . (int)$id;
+    }
+    return $url;
 }
 
 /**
@@ -87,6 +92,16 @@ function redirect($url) {
  */
 function e($str) {
     return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Alias pour e() - Raccourci pour htmlspecialchars
+ * 
+ * @param string $str La chaîne à échapper
+ * @return string La chaîne échappée
+ */
+function h($str) {
+    return e($str);
 }
 
 /**

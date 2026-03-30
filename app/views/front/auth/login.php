@@ -1,5 +1,5 @@
 <div class="auth-container">
-    <form method="POST" class="auth-form">
+    <form method="POST" class="auth-form" accept-charset="UTF-8">
         <h2>Connexion</h2>
         
         <div class="form-group">
