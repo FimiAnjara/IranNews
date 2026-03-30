@@ -206,6 +206,9 @@ class BackController {
     }
 
     private function handleImageUpload($articleId, $files) {
+        $article = $this->newsModel->getByIdForAdmin($articleId);
+        $articleTitle = $article['title'] ?? null;
+
         // Créer le dossier uploads s'il n'existe pas
         $uploadDir = __DIR__ . '/../../../public/uploads/articles/';
         if (!is_dir($uploadDir)) {
@@ -242,7 +245,7 @@ class BackController {
                     
                     // Insérer l'image dans la base de données
                     $publicUrl = '/uploads/articles/' . $uniqueName;
-                    $altText = $fileName; // Utiliser le nom du fichier comme alt_text par défaut
+                    $altText = $articleTitle ?: $fileName;
                     $this->newsModel->insertImage($articleId, $publicUrl, $altText);
                 }
             }
