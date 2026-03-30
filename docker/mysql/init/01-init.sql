@@ -1,3 +1,5 @@
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+SET CHARACTER SET utf8mb4;
 USE irannews;
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -30,7 +32,7 @@ CREATE TABLE articles (
   id INT AUTO_INCREMENT PRIMARY KEY,
   category_id INT NOT NULL,
   title VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) NOT NULL UNIQUE,
+  slug VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   content LONGTEXT NOT NULL,
   autor VARCHAR(100),
@@ -53,7 +55,7 @@ CREATE TABLE media (
 
 -- INSERT users d'abord
 INSERT INTO users (id, name, email, password_hash)
-VALUES (1, 'Admin', 'admin@example.com', 'admin');
+VALUES (1, 'Admin', 'admin@example.com', '$2y$10$7ZINO38uYLWmUOw1.gCAc.yI6O7UR79mMj2v3Tys1CzFl6Gqdxt2O');
 
 -- INSERT categories AVEC IDS EXPLICITES
 INSERT INTO categories (id, name, slug) VALUES

@@ -1,4 +1,9 @@
 <?php
+// Configuration UTF-8 prioritaire
+header('Content-Type: text/html; charset=utf-8');
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+
 // Chargement de la configuration
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/helpers.php';
@@ -20,6 +25,8 @@ class Database {
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 ]
             );
+            // Forcer UTF-8 pour la communication avec MySQL
+            $this->connection->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
         } catch (PDOException $e) {
             die('Erreur de connexion à la base de données: ' . $e->getMessage());
         }

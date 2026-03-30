@@ -10,7 +10,7 @@
     </div>
 
     <div class="dashboard-content">
-        <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h2>
+        <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['name'] ?? 'Admin'); ?>!</h2>
         <p>Utilisez le menu pour gérer votre contenu.</p>
     </div>
 </div>

@@ -24,11 +24,12 @@ RewriteRule ^categorie-([a-z0-9-]+)/?$ index.php?page=categorie&category=$1 [L,Q
 # Recherche: /recherche-mon-query
 RewriteRule ^recherche-(.+)/?$ index.php?page=recherche&q=$1 [L,QSA]
 
+# Admin pages simples: /admin-accueil, /admin-deconnexion, etc
+RewriteRule ^admin-(accueil|connexion|inscription|a-propos|contact|deconnexion)/?$ index.php?page=$1 [L,QSA]
+
 # Admin: /admin-dashboard, /admin-news-list, etc
 RewriteRule ^admin-([a-z0-9-]+)/?$ index.php?page=admin&action=$1 [L,QSA]
 
-# Pages simples: /accueil, /connexion, /inscription, /a-propos, /contact
-RewriteRule ^(accueil|connexion|inscription|a-propos|contact)/?$ index.php?page=$1 [L,QSA]
 
 # Rediriger vers index.php par défaut si rien ne correspond
 RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]

@@ -20,7 +20,12 @@ class FrontController {
         
         return [
             'view' => 'front/home.php',
-            'data' => ['news' => $news, 'page' => $pageNum]
+            'data' => [
+                'news' => $news,
+                'page' => $pageNum,
+                'page_title' => 'Actualités Iran - IranNews',
+                'meta_description' => 'Actualités en temps réel sur la situation en Iran. Analyses, reportages et chronologies détaillées des événements géopolitiques.'
+            ]
         ];
     }
 
@@ -36,9 +41,17 @@ class FrontController {
         
         $this->newsModel->incrementViews($id);
         
+        // Extraire un résumé du contenu pour la meta description
+        $excerpt = strip_tags($news['description'] ?? $news['content']);
+        $excerpt = substr($excerpt, 0, 160);
+        
         return [
             'view' => 'front/news/show.php',
-            'data' => ['news' => $news]
+            'data' => [
+                'news' => $news,
+                'page_title' => htmlspecialchars($news['title']) . ' - IranNews',
+                'meta_description' => htmlspecialchars($excerpt)
+            ]
         ];
     }
 
@@ -51,7 +64,13 @@ class FrontController {
         
         return [
             'view' => 'front/category.php',
-            'data' => ['news' => $news, 'category' => $category, 'page' => $pageNum]
+            'data' => [
+                'news' => $news,
+                'category' => $category,
+                'page' => $pageNum,
+                'page_title' => 'Catégorie: ' . htmlspecialchars($category) . ' - IranNews',
+                'meta_description' => 'Articles et actualités dans la catégorie ' . htmlspecialchars($category) . ' sur la situation en Iran.'
+            ]
         ];
     }
 
@@ -73,18 +92,32 @@ class FrontController {
         
         return [
             'view' => 'front/search.php',
-            'data' => ['news' => $news, 'query' => $query, 'page' => $pageNum]
+            'data' => [
+                'news' => $news,
+                'query' => $query,
+                'page' => $pageNum,
+                'page_title' => 'Recherche: ' . htmlspecialchars($query) . ' - IranNews',
+                'meta_description' => 'Résultats de recherche pour "' . htmlspecialchars($query) . '" sur IranNews.'
+            ]
         ];
     }
 
     public function about() {
         return [
             'view' => 'front/about.php',
-            'data' => []
+            'data' => [
+                'page_title' => 'À propos - IranNews',
+                'meta_description' => 'En savoir plus sur IranNews, notre mission, notre équipe et nos valeurs éditoriales.'
+            ]
         ];
     }
 
     public function contact() {
+        $defaultMeta = [
+            'page_title' => 'Contact - IranNews',
+            'meta_description' => 'Contactez-nous pour toute question, suggestion ou collaboration.'
+        ];
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
@@ -93,7 +126,7 @@ class FrontController {
             if (empty($name) || empty($email) || empty($message)) {
                 return [
                     'view' => 'front/contact.php',
-                    'data' => ['error' => 'Tous les champs sont requis']
+                    'data' => array_merge($defaultMeta, ['error' => 'Tous les champs sont requis'])
                 ];
             }
 
@@ -105,13 +138,13 @@ class FrontController {
 
             return [
                 'view' => 'front/contact.php',
-                'data' => ['success' => 'Message envoyé avec succès']
+                'data' => array_merge($defaultMeta, ['success' => 'Message envoyé avec succès'])
             ];
         }
 
         return [
             'view' => 'front/contact.php',
-            'data' => []
+            'data' => $defaultMeta
         ];
     }
 }

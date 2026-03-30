@@ -1,10 +1,10 @@
 <div class="auth-container">
-    <form method="POST" class="auth-form">
+    <form method="POST" class="auth-form" accept-charset="UTF-8">
         <h2>Connexion</h2>
         
         <div class="form-group">
-            <label for="username">Identifiant:</label>
-            <input type="text" id="username" name="username" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
         </div>
 
         <div class="form-group">
