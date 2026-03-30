@@ -1,9 +1,11 @@
 services:
-  app:
+  frontoffice:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: irannews_app
+      args:
+        APACHE_DOCUMENT_ROOT: /var/www/html/frontoffice/public
+    container_name: irannews_frontoffice
     ports:
       - "8050:80"
     environment:
@@ -12,6 +14,34 @@ services:
       DB_PASSWORD: irannews_pass
       DB_NAME: irannews
       DB_PORT: 3306
+      FRONT_BASE_URL: http://localhost:8050
+      BACK_BASE_URL: http://localhost:8051
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - irannews_network
+    restart: unless-stopped
+
+  backoffice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APACHE_DOCUMENT_ROOT: /var/www/html/backoffice/public
+    container_name: irannews_backoffice
+    ports:
+      - "8051:80"
+    environment:
+      DB_HOST: db
+      DB_USER: irannews_user
+      DB_PASSWORD: irannews_pass
+      DB_NAME: irannews
+      DB_PORT: 3306
+      FRONT_BASE_URL: http://localhost:8050
+      BACK_BASE_URL: http://localhost:8051
     depends_on:
       db:
         condition: service_healthy

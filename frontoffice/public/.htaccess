@@ -1,0 +1,29 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+# Exemption pour les uploads partages (alias Apache)
+RewriteCond %{REQUEST_URI} ^/uploads/
+RewriteRule ^ - [L]
+
+# Ne pas rewriter les fichiers et dossiers existants
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Bloquer l'acces direct aux dossiers sensibles
+RewriteRule ^(app|config|database|docker|backoffice|frontoffice) - [F,L]
+
+# Article: /article-5 ou /article-5-mon-slug
+RewriteRule ^article-([0-9]+)(-[a-z0-9-]+)?/?$ index.php?page=article&id=$1 [L,QSA]
+
+# Categorie: /categorie-politique
+RewriteRule ^categorie-([a-z0-9-]+)/?$ index.php?page=categorie&category=$1 [L,QSA]
+
+# Recherche: /recherche-mon-query
+RewriteRule ^recherche-(.+)/?$ index.php?page=recherche&q=$1 [L,QSA]
+
+# Pages simples
+RewriteRule ^(accueil|a-propos|contact|connexion|inscription|deconnexion)/?$ index.php?page=$1 [L,QSA]
+
+# Rediriger vers index.php par defaut si rien ne correspond
+RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]
