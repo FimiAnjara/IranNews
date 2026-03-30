@@ -146,6 +146,7 @@ h6 {
 /* Dropdown menu */
 .navbar-menu .dropdown {
     position: relative;
+    padding-bottom: 0.4rem;
 }
 
 .navbar-menu .dropdown-toggle {
@@ -180,7 +181,7 @@ h6 {
     position: absolute;
     top: 100%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(6px);
     background-color: var(--card);
     border: 1px solid var(--border);
     border-top: 3px solid var(--accent);
@@ -188,13 +189,14 @@ h6 {
     min-width: 240px;
     padding: 0.65rem 0;
     margin: 0;
-    margin-top: 0.5rem;
+    margin-top: 0;
     display: none;
     z-index: 1000;
     box-shadow: 0 12px 20px rgba(11, 18, 32, 0.12);
 }
 
-.navbar-menu .dropdown:hover .dropdown-menu {
+.navbar-menu .dropdown:hover .dropdown-menu,
+.navbar-menu .dropdown:focus-within .dropdown-menu {
     display: block;
     animation: slideDown 0.2s ease-out;
 }
@@ -202,11 +204,11 @@ h6 {
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateX(-50%) translateY(-10px);
+        transform: translateX(-50%) translateY(-6px);
     }
     to {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: translateX(-50%) translateY(6px);
     }
 }
 

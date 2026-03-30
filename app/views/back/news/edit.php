@@ -47,8 +47,8 @@
 
         <div class="form-group">
             <label for="published">
-                <input type="checkbox" id="published" name="published" value="1" <?php echo ($news['etat'] ?? 0) ? 'checked' : ''; ?>>
                 Publier maintenant
+                <input type="checkbox" id="published" name="published" value="1" <?php echo ($news['etat'] ?? 0) ? 'checked' : ''; ?>>
             </label>
         </div>
 
