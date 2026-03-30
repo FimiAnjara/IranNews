@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
 # Configuration Apache
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Activer mod_rewrite pour les URLs reecrites
-RUN a2enmod rewrite
+# Activer les modules Apache utiles
+RUN a2enmod rewrite headers expires deflate include
 
 # Permettre le .htaccess
 RUN sed -i 's/<Directory \/var\/www\/html>/&\n    AllowOverride All/' /etc/apache2/apache2.conf
