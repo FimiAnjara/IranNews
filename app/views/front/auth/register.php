@@ -3,8 +3,8 @@
         <h2>Inscription</h2>
         
         <div class="form-group">
-            <label for="username">Identifiant:</label>
-            <input type="text" id="username" name="username" required>
+            <label for="name">Nom:</label>
+            <input type="text" id="name" name="name" required>
         </div>
 
         <div class="form-group">

@@ -53,7 +53,7 @@ CREATE TABLE media (
 
 -- INSERT users d'abord
 INSERT INTO users (id, name, email, password_hash)
-VALUES (1, 'Admin', 'admin@example.com', 'admin');
+VALUES (1, 'Admin', 'admin@example.com', '$2y$10$7ZINO38uYLWmUOw1.gCAc.yI6O7UR79mMj2v3Tys1CzFl6Gqdxt2O');
 
 -- INSERT categories AVEC IDS EXPLICITES
 INSERT INTO categories (id, name, slug) VALUES
