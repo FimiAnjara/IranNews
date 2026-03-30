@@ -16,7 +16,10 @@ class AuthController {
             if (empty($email) || empty($password)) {
                 return [
                     'view' => 'auth/login.php',
-                    'data' => ['error' => 'Email et mot de passe requis']
+                    'data' => [
+                        'error' => 'Email et mot de passe requis',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
@@ -33,7 +36,10 @@ class AuthController {
 
             return [
                 'view' => 'auth/login.php',
-                'data' => ['error' => 'Email ou mot de passe incorrect']
+                'data' => [
+                    'error' => 'Email ou mot de passe incorrect',
+                    'suppress_global_alert' => true
+                ]
             ];
         }
 
@@ -44,7 +50,7 @@ class AuthController {
 
         return [
             'view' => 'auth/login.php',
-            'data' => []
+            'data' => ['suppress_global_alert' => true]
         ];
     }
 
@@ -65,28 +71,40 @@ class AuthController {
             if (empty($name) || empty($email) || empty($password)) {
                 return [
                     'view' => 'auth/register.php',
-                    'data' => ['error' => 'Tous les champs sont requis']
+                    'data' => [
+                        'error' => 'Tous les champs sont requis',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
             if ($password !== $confirm) {
                 return [
                     'view' => 'auth/register.php',
-                    'data' => ['error' => 'Les mots de passe ne correspondent pas']
+                    'data' => [
+                        'error' => 'Les mots de passe ne correspondent pas',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
             if ($this->userModel->getByName($name)) {
                 return [
                     'view' => 'auth/register.php',
-                    'data' => ['error' => 'Ce nom est déjà utilisé']
+                    'data' => [
+                        'error' => 'Ce nom est déjà utilisé',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
             if ($this->userModel->getByEmail($email)) {
                 return [
                     'view' => 'auth/register.php',
-                    'data' => ['error' => 'Cet email est déjà utilisé']
+                    'data' => [
+                        'error' => 'Cet email est déjà utilisé',
+                        'suppress_global_alert' => true
+                    ]
                 ];
             }
 
@@ -94,13 +112,16 @@ class AuthController {
 
             return [
                 'view' => 'auth/register.php',
-                'data' => ['success' => 'Inscription réussie! Connectez-vous.']
+                'data' => [
+                    'success' => 'Inscription réussie! Connectez-vous.',
+                    'suppress_global_alert' => true
+                ]
             ];
         }
 
         return [
             'view' => 'auth/register.php',
-            'data' => []
+            'data' => ['suppress_global_alert' => true]
         ];
     }
 }

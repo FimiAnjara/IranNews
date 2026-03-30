@@ -1,5 +1,17 @@
 <div class="admin-edit">
     <h1>Éditer l'article</h1>
+
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger form-alert">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success form-alert">
+            <?php echo htmlspecialchars($success); ?>
+        </div>
+    <?php endif; ?>
     
     <script src="/assets/js/tinymce/tinymce.min.js"></script>
     <script>
@@ -50,6 +62,12 @@
                 Publier maintenant
                 <input type="checkbox" id="published" name="published" value="1" <?php echo ($news['etat'] ?? 0) ? 'checked' : ''; ?>>
             </label>
+        </div>
+
+        <div class="form-group">
+            <label for="images_alt_text">Texte alternatif des images:</label>
+            <input type="text" id="images_alt_text" name="images_alt_text" maxlength="255" placeholder="Ex: Vue generale de la manifestation">
+            <small>Ce texte sera applique a toutes les nouvelles images ajoutees.</small>
         </div>
 
         <div class="form-group">

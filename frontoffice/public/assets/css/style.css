@@ -658,6 +658,10 @@ main {
     border-left: 4px solid transparent;
 }
 
+.form-alert {
+    margin-top: 1rem;
+}
+
 .alert-success {
     background-color: #f2faf5;
     color: #1a4d33;
@@ -960,6 +964,26 @@ main {
     font-style: italic;
     margin: 0;
     border-top: 1px solid var(--border);
+}
+
+/* Uploaded images sizing */
+.article-content img {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.article-gallery .gallery-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
 }
 
 /* Article content */
