@@ -67,6 +67,21 @@ try {
             $data = $result['data'];
             break;
 
+        // API endpoints
+        case 'api-news':
+            header('Content-Type: application/json; charset=utf-8');
+            $controller = new FrontController();
+            $result = $controller->getFilteredNews();
+            echo json_encode($result);
+            exit;
+
+        case 'api-categories':
+            header('Content-Type: application/json; charset=utf-8');
+            $controller = new FrontController();
+            $result = $controller->getCategories();
+            echo json_encode($result);
+            exit;
+
         // Auth (rediriger vers le backoffice)
         case 'connexion':
         case 'login':
