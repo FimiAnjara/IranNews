@@ -32,7 +32,7 @@ CREATE TABLE articles (
   id INT AUTO_INCREMENT PRIMARY KEY,
   category_id INT NOT NULL,
   title VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) NOT NULL UNIQUE,
+  slug VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   content LONGTEXT NOT NULL,
   autor VARCHAR(100),

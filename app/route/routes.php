@@ -122,6 +122,9 @@ try {
             } elseif (strpos($action, 'news-delete-') === 0) {
                 $newsId = (int)str_replace('news-delete-', '', $action);
                 $result = $controller->newsDelete($newsId);
+            } elseif (strpos($action, 'news-toggle-publish-') === 0) {
+                $newsId = (int)str_replace('news-toggle-publish-', '', $action);
+                $result = $controller->newsTogglePublish($newsId);
             } elseif ($action === 'users-list') {
                 $result = $controller->usersList();
             } elseif ($action === 'categories-list') {

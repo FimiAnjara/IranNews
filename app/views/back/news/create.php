@@ -40,7 +40,7 @@
 
         <div class="form-group">
             <label for="content">Contenu:</label>
-            <textarea id="content" name="content" rows="12" required></textarea>
+            <textarea id="content" name="content" rows="12"></textarea>
         </div>
 
         <div class="form-group">
@@ -48,13 +48,6 @@
             <input type="file" id="images" name="images[]" multiple accept="image/*">
             <small>Sélectionnez une ou plusieurs images (JPG, PNG, GIF)</small>
             <div id="image-preview" class="image-preview"></div>
-        </div>
-
-        <div class="form-group">
-            <label for="published">
-                <input type="checkbox" id="published" name="published" value="1">
-                Publier maintenant
-            </label>
         </div>
 
         <div class="form-actions">
@@ -183,5 +176,18 @@ document.addEventListener('click', function(e) {
         document.getElementById('images').value = '';
         document.getElementById('image-preview').innerHTML = '';
     }
+});
+
+// Validation du contenu TinyMCE avant soumission
+document.querySelector('.article-form').addEventListener('submit', function(e) {
+    const editorContent = tinymce.get('content').getContent();
+    if (!editorContent || editorContent.trim() === '') {
+        e.preventDefault();
+        alert('Le contenu de l\'article est requis.');
+        tinymce.get('content').focus();
+        return false;
+    }
+    // Mettre à jour le textarea avant soumission
+    tinymce.get('content').save();
 });
 </script>

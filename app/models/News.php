@@ -226,4 +226,124 @@ class News extends Model {
         $str = preg_replace('/-+/', '-', $str);
         return trim($str, '-');
     }
+
+    /**
+     * Récupérer la première image d'un article
+     */
+    public function getFirstImage($articleId) {
+        $this->db->query("
+            SELECT url, alt_text FROM media 
+            WHERE article_id = :article_id 
+            ORDER BY created_at ASC 
+            LIMIT 1
+        ");
+        $this->db->bind(':article_id', $articleId, PDO::PARAM_INT);
+        return $this->db->single();
+    }
+
+    /**
+     * Récupérer les articles avec filtres (admin)
+     */
+    public function getFiltered($search = '', $status = '', $categoryId = '', $dateFrom = '', $dateTo = '', $limit = 10, $offset = 0) {
+        $sql = "
+            SELECT a.*, c.name as category_name
+            FROM articles a 
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE 1=1
+        ";
+        
+        // Filtre recherche (titre, id, description)
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+            $sql .= " AND (a.title LIKE :search OR a.id LIKE :search OR a.description LIKE :search)";
+        }
+        
+        // Filtre statut
+        if ($status !== '') {
+            $sql .= " AND a.etat = :status";
+        }
+        
+        // Filtre catégorie
+        if (!empty($categoryId)) {
+            $sql .= " AND a.category_id = :category_id";
+        }
+        
+        // Filtre date début
+        if (!empty($dateFrom)) {
+            $sql .= " AND DATE(a.created_at) >= :date_from";
+        }
+        
+        // Filtre date fin
+        if (!empty($dateTo)) {
+            $sql .= " AND DATE(a.created_at) <= :date_to";
+        }
+        
+        $sql .= " ORDER BY a.created_at DESC LIMIT :limit OFFSET :offset";
+        
+        $this->db->query($sql);
+        
+        if (!empty($search)) {
+            $this->db->bind(':search', $search);
+        }
+        if ($status !== '') {
+            $this->db->bind(':status', (int)$status, PDO::PARAM_INT);
+        }
+        if (!empty($categoryId)) {
+            $this->db->bind(':category_id', (int)$categoryId, PDO::PARAM_INT);
+        }
+        if (!empty($dateFrom)) {
+            $this->db->bind(':date_from', $dateFrom);
+        }
+        if (!empty($dateTo)) {
+            $this->db->bind(':date_to', $dateTo);
+        }
+        
+        $this->db->bind(':limit', (int)$limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', (int)$offset, PDO::PARAM_INT);
+        
+        return $this->db->resultSet();
+    }
+
+    /**
+     * Mettre à jour le statut de publication d'un article
+     */
+    public function updateStatus($id, $status) {
+        $sql = "UPDATE articles SET etat = :status, updated_at = NOW()";
+        if ($status == 1) {
+            $sql .= ", published_at = NOW()";
+        }
+        $sql .= " WHERE id = :id";
+        
+        $this->db->query($sql);
+        $this->db->bind(':status', (int)$status, PDO::PARAM_INT);
+        $this->db->bind(':id', (int)$id, PDO::PARAM_INT);
+        return $this->db->execute();
+    }
+
+    /**
+     * Récupérer toutes les images d'un article
+     */
+    public function getAllImages($articleId) {
+        $this->db->query("
+            SELECT url, alt_text FROM media 
+            WHERE article_id = :article_id 
+            ORDER BY created_at ASC
+        ");
+        $this->db->bind(':article_id', (int)$articleId, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
+     * Insérer une image dans la table media
+     */
+    public function insertImage($articleId, $url, $altText = null) {
+        $this->db->query("
+            INSERT INTO media (article_id, url, alt_text, created_at)
+            VALUES (:article_id, :url, :alt_text, NOW())
+        ");
+        $this->db->bind(':article_id', (int)$articleId, PDO::PARAM_INT);
+        $this->db->bind(':url', $url);
+        $this->db->bind(':alt_text', $altText);
+        return $this->db->execute();
+    }
 }

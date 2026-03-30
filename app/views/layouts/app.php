@@ -27,7 +27,7 @@
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <!-- Dropdown Gestion des Articles -->
                     <li class="dropdown">
-                        <span class="dropdown-toggle">Articles ▼</span>
+                        <span class="dropdown-toggle">Articles</span>
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo adminUrl('news-list'); ?>">Gestion des articles</a></li>
                             <li><a href="<?php echo adminUrl('news-create'); ?>">Créer un article</a></li>
@@ -36,7 +36,7 @@
                     
                     <!-- Dropdown Gestion des Catégories -->
                     <li class="dropdown">
-                        <span class="dropdown-toggle">Catégories ▼</span>
+                        <span class="dropdown-toggle">Catégories</span>
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo adminUrl('categories-list'); ?>">Gestion des catégories</a></li>
                             <li><a href="<?php echo adminUrl('categories-create'); ?>">Créer une catégorie</a></li>

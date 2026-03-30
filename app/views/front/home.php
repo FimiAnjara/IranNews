@@ -4,13 +4,28 @@
 </div>
 
 <main class="news-container">
+    <?php 
+    // Instancier le modèle News pour récupérer les images
+    $newsModel = new News();
+    ?>
+    
     <?php if (empty($news)): ?>
         <p class="no-articles">Aucun article disponible pour le moment.</p>
     <?php else: ?>
         <!-- Article principal (premier de la liste) -->
-        <?php if (isset($news[0])): ?>
+        <?php if (isset($news[0])): 
+            $featuredImage = $newsModel->getFirstImage($news[0]['id']);
+        ?>
             <section class="featured-article">
                 <article class="featured-card">
+                    <?php if ($featuredImage): ?>
+                        <div class="featured-image">
+                            <img src="<?php echo htmlspecialchars($featuredImage['url']); ?>" 
+                                 alt="<?php echo htmlspecialchars($featuredImage['alt_text'] ?? $news[0]['title']); ?>"
+                                 class="featured-img">
+                        </div>
+                    <?php endif; ?>
+                    
                     <div class="featured-content">
                         <h2><a href="<?php echo articleUrl($news[0]['id'], $news[0]['slug']); ?>">
                             <?php echo htmlspecialchars($news[0]['title']); ?>
@@ -42,33 +57,44 @@
                 <div class="news-grid">
                     <?php for ($i = 1; $i < count($news); $i++): 
                         $article = $news[$i];
+                        $articleImage = $newsModel->getFirstImage($article['id']);
                     ?>
                         <article class="news-card">
-                            <h3>
-                                <a href="<?php echo articleUrl($article['id'], $article['slug']); ?>">
-                                    <?php echo htmlspecialchars($article['title']); ?>
-                                </a>
-                            </h3>
-                            
-                            <p class="news-meta">
-                                <span class="author">Par <?php echo htmlspecialchars($article['autor'] ?? 'Admin'); ?></span>
-                                <span class="separator">•</span>
-                                <time datetime="<?php echo $article['published_at'] ?? $article['created_at']; ?>">
-                                    <?php echo date('d M Y', strtotime($article['published_at'] ?? $article['created_at'])); ?>
-                                </time>
-                            </p>
-                            
-                            <p class="news-excerpt">
-                                <?php echo htmlspecialchars(substr($article['description'] ?? $article['content'], 0, 150)); ?>...
-                            </p>
-                            
-                            <?php if ($article['category_name']): ?>
-                                <p class="category-link">
-                                    <a href="<?php echo categoryUrl($article['category_name']); ?>">
-                                        <span class="category"><?php echo htmlspecialchars($article['category_name']); ?></span>
-                                    </a>
-                                </p>
+                            <?php if ($articleImage): ?>
+                                <div class="news-card-image">
+                                    <img src="<?php echo htmlspecialchars($articleImage['url']); ?>" 
+                                         alt="<?php echo htmlspecialchars($articleImage['alt_text'] ?? $article['title']); ?>"
+                                         class="card-img">
+                                </div>
                             <?php endif; ?>
+                            
+                            <div class="news-card-content">
+                                <h3>
+                                    <a href="<?php echo articleUrl($article['id'], $article['slug']); ?>">
+                                        <?php echo htmlspecialchars($article['title']); ?>
+                                    </a>
+                                </h3>
+                                
+                                <p class="news-meta">
+                                    <span class="author">Par <?php echo htmlspecialchars($article['autor'] ?? 'Admin'); ?></span>
+                                    <span class="separator">•</span>
+                                    <time datetime="<?php echo $article['published_at'] ?? $article['created_at']; ?>">
+                                        <?php echo date('d M Y', strtotime($article['published_at'] ?? $article['created_at'])); ?>
+                                    </time>
+                                </p>
+                                
+                                <p class="news-excerpt">
+                                    <?php echo htmlspecialchars(substr($article['description'] ?? $article['content'], 0, 150)); ?>...
+                                </p>
+                                
+                                <?php if ($article['category_name']): ?>
+                                    <p class="category-link">
+                                        <a href="<?php echo categoryUrl($article['category_name']); ?>">
+                                            <span class="category"><?php echo htmlspecialchars($article['category_name']); ?></span>
+                                        </a>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
                         </article>
                     <?php endfor; ?>
                 </div>
