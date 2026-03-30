@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Passer au contenu</a>
     <!-- Navigation -->
     <nav class="navbar" role="navigation" aria-label="Navigation principale">
         <div class="container">
