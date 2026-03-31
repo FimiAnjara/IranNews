@@ -10,7 +10,10 @@
     <link rel="canonical" href="<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
     
     <title><?php echo htmlspecialchars($data['page_title'] ?? APP_NAME . ' - Actualités Iran'); ?></title>
-    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -125,6 +128,6 @@
         </div>
     </footer>
 
-    <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/script.js" defer></script>
 </body>
 </html>
