@@ -272,7 +272,6 @@ p {
     background-color: var(--bg-lighter);
     border: 1px solid var(--border-color);
     padding: 0.45rem 0.9rem;
-    border-radius: 4px;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
