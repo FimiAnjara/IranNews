@@ -32,6 +32,33 @@ class Category extends Model {
     }
 
     /**
+     * Récupère toutes les catégories avec pagination
+     */
+    public function getAllWithArticleCountPaginated($limit = 10, $offset = 0) {
+        $this->db->query("
+            SELECT c.*,
+                   COUNT(a.id) as article_count
+            FROM categories c
+            LEFT JOIN articles a ON a.category_id = c.id AND a.etat = 1
+            GROUP BY c.id
+            ORDER BY c.name ASC
+            LIMIT :limit OFFSET :offset
+        ");
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
+     * Compter le nombre total de catégories
+     */
+    public function count() {
+        $this->db->query("SELECT COUNT(*) as total FROM categories");
+        $result = $this->db->single();
+        return (int)($result['total'] ?? 0);
+    }
+
+    /**
      * Récupère une catégorie par slug
      */
     public function getBySlug($slug) {

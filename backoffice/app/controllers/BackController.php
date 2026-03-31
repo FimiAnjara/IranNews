@@ -40,7 +40,7 @@ class BackController {
 
     public function newsList() {
         $pageNum = (int)($_GET['p'] ?? 1);
-        $limit = 10;
+        $limit = 5;
         $offset = ($pageNum - 1) * $limit;
         
         // Récupérer les filtres de la requête GET
@@ -53,6 +53,10 @@ class BackController {
         // Appliquer les filtres
         $news = $this->newsModel->getFiltered($search, $status, $categoryId, $dateFrom, $dateTo, $limit, $offset);
         
+        // Compter le total d'articles filtrés
+        $totalNews = $this->newsModel->countFiltered($search, $status, $categoryId, $dateFrom, $dateTo);
+        $totalPages = ceil($totalNews / $limit);
+        
         // Récupérer les catégories pour le filtre
         $categories = $this->categoryModel->getAll();
         
@@ -62,6 +66,8 @@ class BackController {
                 'news' => $news,
                 'page' => $pageNum,
                 'limit' => $limit,
+                'totalPages' => $totalPages,
+                'totalNews' => $totalNews,
                 'categories' => $categories,
                 'filters' => [
                     'search' => $search,
@@ -362,10 +368,23 @@ class BackController {
     }
 
     public function usersList() {
-        $users = $this->userModel->getAll();
+        $pageNum = (int)($_GET['p'] ?? 1);
+        $limit = 5;
+        $offset = ($pageNum - 1) * $limit;
+        
+        $users = $this->userModel->getAllPaginated($limit, $offset);
+        $totalUsers = $this->userModel->count();
+        $totalPages = ceil($totalUsers / $limit);
+        
         return [
             'view' => 'back/users/list.php',
-            'data' => ['users' => $users]
+            'data' => [
+                'users' => $users,
+                'page' => $pageNum,
+                'limit' => $limit,
+                'totalPages' => $totalPages,
+                'totalUsers' => $totalUsers
+            ]
         ];
     }
 

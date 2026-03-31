@@ -11,6 +11,25 @@ class User extends Model {
     }
 
     /**
+     * Récupère les utilisateurs avec pagination
+     */
+    public function getAllPaginated($limit = 10, $offset = 0) {
+        $this->db->query("SELECT id, name, email, created_at FROM " . static::$table . " ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+        return $this->db->resultSet();
+    }
+
+    /**
+     * Compter le nombre total d'utilisateurs
+     */
+    public function count() {
+        $this->db->query("SELECT COUNT(*) as total FROM " . static::$table);
+        $result = $this->db->single();
+        return (int)($result['total'] ?? 0);
+    }
+
+    /**
      * Récupère un utilisateur par ID (alias pour find())
      */
     public function getById($id) {

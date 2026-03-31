@@ -39,4 +39,27 @@
             <?php endif; ?>
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <?php if (!empty($categories) && $totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="<?php echo adminUrl('categories-list') . '?p=' . ($page - 1); ?>" class="btn btn-sm">← Précédent</a>
+            <?php endif; ?>
+            
+            <div class="pagination-pages">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <?php if ($i === $page): ?>
+                        <span class="pagination-current"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a href="<?php echo adminUrl('categories-list') . '?p=' . $i; ?>" class="pagination-link"><?php echo $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+            </div>
+            
+            <?php if ($page < $totalPages): ?>
+                <a href="<?php echo adminUrl('categories-list') . '?p=' . ($page + 1); ?>" class="btn btn-sm">Suivant →</a>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 </div>

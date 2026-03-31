@@ -20,12 +20,22 @@ class CategoryController {
      * Affiche la liste des catégories
      */
     public function list() {
-        $categories = $this->categoryModel->getAllWithArticleCount();
+        $pageNum = (int)($_GET['p'] ?? 1);
+        $limit = 5;
+        $offset = ($pageNum - 1) * $limit;
+        
+        $categories = $this->categoryModel->getAllWithArticleCountPaginated($limit, $offset);
+        $totalCategories = $this->categoryModel->count();
+        $totalPages = ceil($totalCategories / $limit);
         
         return [
             'view' => 'back/categories/list.php',
             'data' => [
-                'categories' => $categories
+                'categories' => $categories,
+                'page' => $pageNum,
+                'limit' => $limit,
+                'totalPages' => $totalPages,
+                'totalCategories' => $totalCategories
             ]
         ];
     }

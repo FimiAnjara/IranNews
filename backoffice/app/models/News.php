@@ -311,6 +311,66 @@ class News extends Model {
     }
 
     /**
+     * Compter les articles filtrés
+     */
+    public function countFiltered($search = '', $status = '', $categoryId = '', $dateFrom = '', $dateTo = '') {
+        $sql = "
+            SELECT COUNT(*) as total
+            FROM articles a 
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE 1=1
+            AND a.delete_at IS NULL
+        ";
+        
+        // Filtre recherche (titre, id, description)
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+            $sql .= " AND (a.title LIKE :search OR a.id LIKE :search OR a.description LIKE :search)";
+        }
+        
+        // Filtre statut
+        if ($status !== '') {
+            $sql .= " AND a.etat = :status";
+        }
+        
+        // Filtre catégorie
+        if (!empty($categoryId)) {
+            $sql .= " AND a.category_id = :category_id";
+        }
+        
+        // Filtre date début
+        if (!empty($dateFrom)) {
+            $sql .= " AND DATE(a.created_at) >= :date_from";
+        }
+        
+        // Filtre date fin
+        if (!empty($dateTo)) {
+            $sql .= " AND DATE(a.created_at) <= :date_to";
+        }
+        
+        $this->db->query($sql);
+        
+        if (!empty($search)) {
+            $this->db->bind(':search', $search);
+        }
+        if ($status !== '') {
+            $this->db->bind(':status', (int)$status, PDO::PARAM_INT);
+        }
+        if (!empty($categoryId)) {
+            $this->db->bind(':category_id', (int)$categoryId, PDO::PARAM_INT);
+        }
+        if (!empty($dateFrom)) {
+            $this->db->bind(':date_from', $dateFrom);
+        }
+        if (!empty($dateTo)) {
+            $this->db->bind(':date_to', $dateTo);
+        }
+        
+        $result = $this->db->single();
+        return (int)($result['total'] ?? 0);
+    }
+
+    /**
      * Mettre à jour le statut de publication d'un article
      */
     public function updateStatus($id, $status) {
