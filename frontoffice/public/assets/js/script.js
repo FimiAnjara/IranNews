@@ -1,19 +1,50 @@
 // JavaScript simple pour le site
 
 document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileSearchToggle = document.querySelector('.mobile-search-toggle');
     const searchToggle = document.querySelector('.search-toggle');
     const searchBar = document.getElementById('searchBar');
 
-    // Confirmation de suppression
-    const deleteLinks = document.querySelectorAll('.delete-link');
-    deleteLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (!confirm('Êtes-vous sûr?')) {
-                e.preventDefault();
+    // Mobile Menu Toggle
+    if (mobileMenuToggle && mobileMenu) {
+        mobileMenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('open');
+            mobileMenuToggle.setAttribute('aria-expanded', mobileMenu.classList.contains('open'));
+        });
+
+        // Close menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
+    // Mobile Search Toggle
+    if (mobileSearchToggle && searchBar) {
+        mobileSearchToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = searchBar.classList.toggle('is-open');
+            searchBar.style.display = isOpen ? 'block' : 'none';
+            mobileSearchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (isOpen) {
+                const searchInput = searchBar.querySelector('input[name="q"]');
+                if (searchInput) searchInput.focus();
+            }
+            // Close mobile menu if open
+            if (mobileMenu) {
+                mobileMenu.classList.remove('open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
             }
         });
-    });
+    }
 
+    // Desktop Search Toggle
     if (searchToggle && searchBar) {
         const searchInput = searchBar.querySelector('input[name="q"]');
 
@@ -45,6 +76,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (mobileMenu && mobileMenuToggle) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                mobileMenu.classList.remove('open');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+
+    // Confirmation de suppression
+    const deleteLinks = document.querySelectorAll('.delete-link');
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!confirm('Êtes-vous sûr?')) {
+                e.preventDefault();
+            }
+        });
+    });
 
     const galleries = document.querySelectorAll('.article-gallery[data-gallery="slider"]');
     galleries.forEach((gallery) => {
@@ -90,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             const inputs = form.querySelectorAll('input[required], textarea[required]');
             let valid = true;
-            
+
             inputs.forEach(input => {
                 if (!input.value.trim()) {
                     input.style.borderColor = 'red';
@@ -99,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.style.borderColor = '';
                 }
             });
-            
+
             if (!valid) {
                 e.preventDefault();
                 alert('Veuillez remplir tous les champs requis');

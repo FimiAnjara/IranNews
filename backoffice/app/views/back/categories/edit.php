@@ -20,13 +20,13 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Description de la catégorie"><?php echo htmlspecialchars($category['description'] ?? ''); ?></textarea>
-        </div>
-
-        <div class="form-group">
             <label>Slug:</label>
             <code><?php echo htmlspecialchars($category['slug'] ?? ''); ?></code>
+        </div>
+
+        <div class="form-group checkbox">
+            <input type="checkbox" id="show_menu" name="show_menu" <?php echo ($category['show_menu'] ?? 1) ? 'checked' : ''; ?>>
+            <label for="show_menu">Afficher dans le menu</label>
         </div>
 
         <div class="form-actions">
@@ -56,6 +56,22 @@
     border: 1px solid #bdc3c7;
     border-radius: 4px;
     font-family: inherit;
+}
+
+.category-form .form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.category-form .form-group.checkbox input {
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.category-form .form-group.checkbox label {
+    margin: 0;
 }
 
 .category-form textarea {

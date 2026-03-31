@@ -55,7 +55,6 @@
     <table class="admin-table">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Titre</th>
                 <th>Catégorie</th>
                 <th>Statut</th>
@@ -67,11 +66,6 @@
             <?php if (!empty($news)): ?>
                 <?php foreach ($news as $article): ?>
                     <tr>
-                        <td>
-                            <a href="<?php echo adminUrl('news-show', $article['id']); ?>">
-                                #<?php echo htmlspecialchars($article['id']); ?>
-                            </a>
-                        </td>
                         <td>
                             <a href="<?php echo adminUrl('news-show', $article['id']); ?>">
                                 <?php echo htmlspecialchars($article['title']); ?>
@@ -95,11 +89,57 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" class="empty-state">
+                    <td colspan="5" class="empty-state">
                         Aucun article trouvé. <a href="<?php echo adminUrl('news-create'); ?>">Créer un article</a>
                     </td>
                 </tr>
             <?php endif; ?>
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <?php if (!empty($news) && $totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="<?php echo adminUrl('news-list') . '?p=' . ($page - 1) . buildQueryString($filters); ?>" class="btn btn-sm">← Précédent</a>
+            <?php endif; ?>
+            
+            <div class="pagination-pages">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <?php if ($i === $page): ?>
+                        <span class="pagination-current"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a href="<?php echo adminUrl('news-list') . '?p=' . $i . buildQueryString($filters); ?>" class="pagination-link"><?php echo $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+            </div>
+            
+            <?php if ($page < $totalPages): ?>
+                <a href="<?php echo adminUrl('news-list') . '?p=' . ($page + 1) . buildQueryString($filters); ?>" class="btn btn-sm">Suivant →</a>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 </div>
+
+<?php
+// Fonction helper pour construire les paramètres de query
+function buildQueryString($filters) {
+    $qs = '';
+    if (!empty($filters['search'])) {
+        $qs .= '&search=' . urlencode($filters['search']);
+    }
+    if ($filters['status'] !== '') {
+        $qs .= '&status=' . urlencode($filters['status']);
+    }
+    if (!empty($filters['category_id'])) {
+        $qs .= '&category_id=' . urlencode($filters['category_id']);
+    }
+    if (!empty($filters['date_from'])) {
+        $qs .= '&date_from=' . urlencode($filters['date_from']);
+    }
+    if (!empty($filters['date_to'])) {
+        $qs .= '&date_to=' . urlencode($filters['date_to']);
+    }
+    return $qs;
+}
+?>

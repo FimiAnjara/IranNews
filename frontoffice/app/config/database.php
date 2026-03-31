@@ -8,7 +8,7 @@ define('DB_NAME', getenv('DB_NAME') ?: 'irannews');
 define('DB_PORT', getenv('DB_PORT') ?: 3306);
 
 // Configuration générale
-define('APP_NAME', 'IranNews');
+define('APP_NAME', 'WarNews');
 define('APP_URL', 'http://localhost');
 define('APP_DEBUG', true);
 

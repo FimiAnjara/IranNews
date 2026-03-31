@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?php echo htmlspecialchars($data['meta_description'] ?? 'Actualités en temps réel sur la situation en Iran. Analyses, reportages et chronologies détaillées.'); ?>">
     <meta name="keywords" content="iran, actualités, géopolitique, moyen-orient">
-    <meta name="author" content="IranNews">
+    <meta name="author" content="WarNews">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
     
     <title><?php echo htmlspecialchars($data['page_title'] ?? APP_NAME . ' - Actualités Iran'); ?></title>
-    
+
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -20,25 +20,74 @@
             <div class="navbar-brand">
                 <a href="<?php echo url(''); ?>"><?php echo APP_NAME; ?></a>
             </div>
+
+            <!-- Desktop Menu -->
             <ul class="navbar-menu">
                 <li><a href="<?php echo url(''); ?>">Accueil</a></li>
                 <?php if (!empty($data['nav_categories']) && is_array($data['nav_categories'])): ?>
-                    <?php foreach ($data['nav_categories'] as $category): ?>
+                    <?php
+                        $visibleCategories = array_slice($data['nav_categories'], 0, 3);
+                        $hiddenCategories = array_slice($data['nav_categories'], 3);
+                    ?>
+                    <?php foreach ($visibleCategories as $category): ?>
                         <li>
                             <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
                                 <?php echo htmlspecialchars($category['name'] ?? ''); ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
+
+                    <?php if (!empty($hiddenCategories)): ?>
+                        <li class="dropdown">
+                            <button class="dropdown-toggle" type="button" aria-label="Plus de catégories">
+                                <span class="menu-burger"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php foreach ($hiddenCategories as $category): ?>
+                                    <li>
+                                        <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
+                                            <?php echo htmlspecialchars($category['name'] ?? ''); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <li>
                     <button class="search-toggle" type="button" aria-controls="searchBar" aria-expanded="false">
-                        Recherche
+                        <span class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg></span>
                     </button>
                 </li>
             </ul>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" type="button" aria-label="Menu mobile" aria-expanded="false">
+                <span class="menu-burger"></span>
+            </button>
+
+            <!-- Mobile Search Icon -->
+            <button class="mobile-search-toggle" type="button" aria-controls="searchBar" aria-expanded="false" aria-label="Recherche">
+                <span class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg></span>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-menu-list">
+            <li><a href="<?php echo url(''); ?>">Accueil</a></li>
+            <?php if (!empty($data['nav_categories']) && is_array($data['nav_categories'])): ?>
+                <?php foreach ($data['nav_categories'] as $category): ?>
+                    <li>
+                        <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
+                            <?php echo htmlspecialchars($category['name'] ?? ''); ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-bar" id="searchBar">
@@ -76,6 +125,6 @@
         </div>
     </footer>
 
-    <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/script.js" defer></script>
 </body>
 </html>

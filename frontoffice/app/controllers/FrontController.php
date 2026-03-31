@@ -43,7 +43,7 @@ class FrontController {
             'view' => 'front/home.php',
             'data' => [
                 'category_sections' => $categorySections,
-                'page_title' => 'Actualités Iran - IranNews',
+                'page_title' => 'Actualités Iran - WarNews',
                 'meta_description' => 'Actualités en temps réel sur la situation en Iran. Analyses, reportages et chronologies détaillées des événements géopolitiques.'
             ]
         ];
@@ -86,7 +86,7 @@ class FrontController {
                 'news' => $news,
                 'recent_posts' => $recentPosts,
                 'related_news' => $relatedNews,
-                'page_title' => htmlspecialchars($news['title']) . ' - IranNews',
+                'page_title' => htmlspecialchars($news['title']) . ' - WarNews',
                 'meta_description' => htmlspecialchars($excerpt)
             ]
         ];
@@ -110,7 +110,7 @@ class FrontController {
                 'news' => $news,
                 'category' => $category,
                 'page' => $pageNum,
-                'page_title' =>  htmlspecialchars($category) . ' - IranNews',
+                'page_title' =>  htmlspecialchars($category) . ' - WarNews',
                 'meta_description' => 'Articles et actualités dans la catégorie ' . htmlspecialchars($category) . ' sur la situation en Iran.'
             ]
         ];
@@ -143,8 +143,8 @@ class FrontController {
                 'news' => $news,
                 'query' => $query,
                 'page' => $pageNum,
-                'page_title' => 'Recherche: ' . htmlspecialchars($query) . ' - IranNews',
-                'meta_description' => 'Résultats de recherche pour "' . htmlspecialchars($query) . '" sur IranNews.'
+                'page_title' => 'Recherche: ' . htmlspecialchars($query) . ' - WarNews',
+                'meta_description' => 'Résultats de recherche pour "' . htmlspecialchars($query) . '" sur WarNews.'
             ]
         ];
     }
@@ -153,15 +153,15 @@ class FrontController {
         return [
             'view' => 'front/about.php',
             'data' => [
-                'page_title' => 'À propos - IranNews',
-                'meta_description' => 'En savoir plus sur IranNews, notre mission, notre équipe et nos valeurs éditoriales.'
+                'page_title' => 'À propos - WarNews',
+                'meta_description' => 'En savoir plus sur WarNews, notre mission, notre équipe et nos valeurs éditoriales.'
             ]
         ];
     }
 
     public function contact() {
         $defaultMeta = [
-            'page_title' => 'Contact - IranNews',
+            'page_title' => 'Contact - WarNews',
             'meta_description' => 'Contactez-nous pour toute question, suggestion ou collaboration.'
         ];
 
@@ -181,7 +181,7 @@ class FrontController {
             }
 
             // Envoyer l'email ici
-            $to = 'contact@irannews.local';
+            $to = 'contact@warnews.local';
             $subject = 'Nouveau message de: ' . $name;
             $headers = "From: " . $email . "\r\n";
             mail($to, $subject, $message, $headers);
