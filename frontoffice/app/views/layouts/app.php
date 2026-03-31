@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?php echo htmlspecialchars($data['meta_description'] ?? 'Actualités en temps réel sur la situation en Iran. Analyses, reportages et chronologies détaillées.'); ?>">
     <meta name="keywords" content="iran, actualités, géopolitique, moyen-orient">
-    <meta name="author" content="IranNews">
+    <meta name="author" content="WarNews">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>">
     

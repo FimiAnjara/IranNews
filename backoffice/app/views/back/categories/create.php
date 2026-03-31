@@ -19,6 +19,11 @@
             <input type="text" id="name" name="name" required maxlength="100">
         </div>
 
+        <div class="form-group checkbox">
+            <input type="checkbox" id="show_menu" name="show_menu" checked>
+            <label for="show_menu">Afficher dans le menu</label>
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Créer la catégorie</button>
             <a href="<?php echo adminUrl('categories-list'); ?>" class="btn btn-secondary">Annuler</a>
@@ -46,6 +51,22 @@
     border: 1px solid #bdc3c7;
     border-radius: 4px;
     font-family: inherit;
+}
+
+.category-form .form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.category-form .form-group.checkbox input {
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.category-form .form-group.checkbox label {
+    margin: 0;
 }
 
 .category-form textarea {

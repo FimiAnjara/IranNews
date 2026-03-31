@@ -7,9 +7,7 @@
             <div class="article-view">
                 <!-- Fil d'Ariane -->
                 <nav class="breadcrumb">
-                    <a href="<?php echo url('accueil'); ?>">Accueil</a>
                     <?php if ($news['category_name'] ?? null): ?>
-                        <span>/</span>
                         <a href="<?php echo categoryUrl($news['category_name']); ?>">
                             <?php echo htmlspecialchars($news['category_name']); ?>
                         </a>
@@ -70,9 +68,6 @@
                         <?php echo $news['content']; ?>
                     </div>
 
-                    <footer class="article-footer">
-                        <a href="<?php echo url('accueil'); ?>" class="btn btn-secondary">← Retour aux actualités</a>
-                    </footer>
                 </article>
             </div>
 

@@ -1,4 +1,4 @@
-# robots.txt for IranNews
+# robots.txt for WarNews
 # Politique de crawl pour les moteurs de recherche
 
 User-agent: *

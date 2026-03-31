@@ -24,6 +24,11 @@
             <code><?php echo htmlspecialchars($category['slug'] ?? ''); ?></code>
         </div>
 
+        <div class="form-group checkbox">
+            <input type="checkbox" id="show_menu" name="show_menu" <?php echo ($category['show_menu'] ?? 1) ? 'checked' : ''; ?>>
+            <label for="show_menu">Afficher dans le menu</label>
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Mettre à jour</button>
             <a href="<?php echo adminUrl('categories-list'); ?>" class="btn btn-secondary">Annuler</a>
@@ -51,6 +56,22 @@
     border: 1px solid #bdc3c7;
     border-radius: 4px;
     font-family: inherit;
+}
+
+.category-form .form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.category-form .form-group.checkbox input {
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.category-form .form-group.checkbox label {
+    margin: 0;
 }
 
 .category-form textarea {

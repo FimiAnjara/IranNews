@@ -46,6 +46,7 @@ class CategoryController {
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
+            $showMenu = isset($_POST['show_menu']) ? 1 : 0;
 
             if (empty($name)) {
                 return [
@@ -67,7 +68,7 @@ class CategoryController {
                 ];
             }
 
-            $this->categoryModel->create($name);
+            $this->categoryModel->create($name, $showMenu);
 
             return [
                 'view' => 'back/categories/list.php',
@@ -87,6 +88,7 @@ class CategoryController {
     public function edit($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
+            $showMenu = isset($_POST['show_menu']) ? 1 : 0;
 
             if (empty($name)) {
                 return [
@@ -112,7 +114,7 @@ class CategoryController {
                 ];
             }
 
-            $this->categoryModel->update($id, $name);
+            $this->categoryModel->update($id, $name, $showMenu);
 
             return [
                 'view' => 'back/categories/list.php',

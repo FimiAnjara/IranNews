@@ -1,4 +1,4 @@
-# IranNews - Plateforme d'actualités
+# WarNews - Plateforme d'actualités
 
 Un projet PHP classique avec architecture MVC (Model-View-Controller) sans framework. Le projet est organisé en **deux applications distinctes** : une application **frontoffice** (site public) et une application **backoffice** (administration), optimisées pour fonctionner avec Docker et Docker Compose.
 
@@ -18,7 +18,7 @@ Un projet PHP classique avec architecture MVC (Model-View-Controller) sans frame
 ## 🏗️ Structure du projet
 
 ```
-IranNews/
+WarNews/
 ├── frontoffice/              # Application publique (port 8050)
 │   ├── app/
 │   │   ├── config/
@@ -114,7 +114,7 @@ IranNews/
 
 1. **Cloner/placer le projet**
 ```bash
-cd IranNews
+cd WarNews
 ```
 
 2. **Lancer le projet**
