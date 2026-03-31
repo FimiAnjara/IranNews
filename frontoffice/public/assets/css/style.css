@@ -1535,17 +1535,104 @@ main {
 
 /* ==================== FOOTER ==================== */
 .footer {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, #082847 100%);
     color: var(--light);
-    text-align: center;
     padding: var(--spacing-2xl) 0;
     margin-top: var(--spacing-2xl);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.footer p {
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.footer-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--light);
+    margin-bottom: var(--spacing-sm);
+    font-family: var(--font-sans);
+}
+
+.footer-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0;
-    font-weight: 500;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+    padding-left: 0.3rem;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--light);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    background-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--spacing-lg);
+    text-align: center;
+}
+
+.footer-copyright {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 0.5rem 0;
+}
+
+.footer-tagline {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-style: italic;
 }
 
 /* ==================== RESPONSIVE DESIGN ==================== */
@@ -1782,6 +1869,23 @@ main {
     .footer {
         padding: var(--spacing-lg) 0;
         margin-top: var(--spacing-xl);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .footer-title {
+        font-size: 0.9rem;
+    }
+
+    .footer-links {
+        gap: 0.5rem;
+    }
+
+    .footer-links a {
+        font-size: 0.85rem;
     }
 
     /* HOME PAGE LAYOUT - TABLET */
@@ -2053,6 +2157,39 @@ main {
     .footer {
         padding: var(--spacing-lg) 0;
         margin-top: var(--spacing-lg);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .footer-column {
+        text-align: center;
+    }
+
+    .footer-title {
+        font-size: 0.85rem;
+    }
+
+    .footer-links {
+        gap: 0.4rem;
+    }
+
+    .footer-socials {
+        justify-content: center;
+    }
+
+    .footer-bottom {
+        padding-top: var(--spacing-md);
+    }
+
+    .footer-copyright {
+        font-size: 0.8rem;
+    }
+
+    .footer-tagline {
+        font-size: 0.75rem;
     }
 
     /* HOME PAGE - MOBILE */
