@@ -23,13 +23,34 @@
             <ul class="navbar-menu">
                 <li><a href="<?php echo url(''); ?>">Accueil</a></li>
                 <?php if (!empty($data['nav_categories']) && is_array($data['nav_categories'])): ?>
-                    <?php foreach ($data['nav_categories'] as $category): ?>
+                    <?php
+                        $visibleCategories = array_slice($data['nav_categories'], 0, 3);
+                        $hiddenCategories = array_slice($data['nav_categories'], 3);
+                    ?>
+                    <?php foreach ($visibleCategories as $category): ?>
                         <li>
                             <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
                                 <?php echo htmlspecialchars($category['name'] ?? ''); ?>
                             </a>
                         </li>
                     <?php endforeach; ?>
+
+                    <?php if (!empty($hiddenCategories)): ?>
+                        <li class="dropdown">
+                            <button class="dropdown-toggle" type="button" aria-label="Plus de catégories">
+                                <span class="menu-burger"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php foreach ($hiddenCategories as $category): ?>
+                                    <li>
+                                        <a href="<?php echo categoryUrl($category['slug'] ?? $category['name'] ?? ''); ?>">
+                                            <?php echo htmlspecialchars($category['name'] ?? ''); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <li>
                     <button class="search-toggle" type="button" aria-controls="searchBar" aria-expanded="false">
