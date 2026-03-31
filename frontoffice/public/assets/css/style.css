@@ -1188,7 +1188,6 @@ main {
 
 .article-excerpt {
     background-color: var(--bg-light);
-    border-left: 4px solid var(--accent);
     padding: var(--spacing-lg);
     margin: var(--spacing-xl) 0;
     border-radius: 8px;
@@ -1241,7 +1240,6 @@ main {
 }
 
 .article-content blockquote {
-    border-left: 4px solid var(--accent);
     padding-left: var(--spacing-lg);
     margin: var(--spacing-xl) 0;
     font-style: italic;
@@ -1466,7 +1464,6 @@ main {
     padding: var(--spacing-lg);
     border-radius: 8px;
     margin-bottom: var(--spacing-xl);
-    border-left: 4px solid var(--accent);
 }
 
 /* ==================== BREADCRUMB ==================== */
