@@ -55,7 +55,6 @@
     <table class="admin-table">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Titre</th>
                 <th>Catégorie</th>
                 <th>Statut</th>
@@ -67,11 +66,6 @@
             <?php if (!empty($news)): ?>
                 <?php foreach ($news as $article): ?>
                     <tr>
-                        <td>
-                            <a href="<?php echo adminUrl('news-show', $article['id']); ?>">
-                                #<?php echo htmlspecialchars($article['id']); ?>
-                            </a>
-                        </td>
                         <td>
                             <a href="<?php echo adminUrl('news-show', $article['id']); ?>">
                                 <?php echo htmlspecialchars($article['title']); ?>
@@ -95,7 +89,7 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" class="empty-state">
+                    <td colspan="5" class="empty-state">
                         Aucun article trouvé. <a href="<?php echo adminUrl('news-create'); ?>">Créer un article</a>
                     </td>
                 </tr>

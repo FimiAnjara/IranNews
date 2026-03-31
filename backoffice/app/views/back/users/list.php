@@ -7,7 +7,6 @@
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Date d'inscription</th>
@@ -17,7 +16,6 @@
             <tbody>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?php echo $user['id']; ?></td>
                         <td><?php echo htmlspecialchars($user['name']); ?></td>
                         <td><?php echo htmlspecialchars($user['email']); ?></td>
                         <td><?php echo date('d/m/Y', strtotime($user['created_at'])); ?></td>
