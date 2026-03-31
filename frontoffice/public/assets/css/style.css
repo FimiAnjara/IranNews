@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
     /* Palette couleurs - Thème Premium Actualité */
     --primary: #0f3460;
@@ -155,7 +157,7 @@ p {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 500;
     padding: 0.45rem 0.9rem;
     border-radius: 20px;
     cursor: pointer;
@@ -355,7 +357,7 @@ p {
     font-size: 0.9rem;
     text-transform: none;
     letter-spacing: normal;
-    font-weight: 400;
+    font-weight: 300;
     text-align: center;
 }
 
@@ -389,7 +391,7 @@ p {
 .navbar-menu .dropdown-menu .category-count {
     font-size: 0.75rem;
     color: var(--text-secondary);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* ==================== SEARCH BAR ==================== */
@@ -431,7 +433,7 @@ p {
     color: var(--light);
     border: none;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -566,7 +568,7 @@ main {
     letter-spacing: 0.12em;
     font-size: 0.7rem;
     color: var(--accent);
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: var(--spacing-sm);
 }
 
@@ -608,7 +610,7 @@ main {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--primary);
 }
 
@@ -627,7 +629,7 @@ main {
     letter-spacing: 0.14em;
     color: var(--text-secondary);
     margin-bottom: var(--spacing-lg);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .story-item {
@@ -827,7 +829,7 @@ main {
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: all 0.3s ease;
@@ -942,7 +944,7 @@ main {
     border-radius: 6px;
     text-decoration: none;
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -968,7 +970,7 @@ main {
     color: var(--light);
     text-decoration: none;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -991,7 +993,7 @@ main {
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
@@ -1094,7 +1096,7 @@ main {
 
 .recent-content a {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
     color: var(--text-primary);
     margin-bottom: 0.3rem;
@@ -1171,7 +1173,7 @@ main {
     padding: 0.5rem 1.2rem;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-decoration: none;
@@ -1199,7 +1201,7 @@ main {
 
 .lead {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-primary);
     line-height: 1.8;
     margin: 0;
@@ -1340,7 +1342,7 @@ main {
 .form-group label {
     display: block;
     margin-bottom: var(--spacing-sm);
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-primary);
     font-size: 0.95rem;
 }
@@ -1404,7 +1406,7 @@ main {
 
 .auth-link a {
     color: var(--accent);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .auth-link a:hover {
@@ -1493,7 +1495,7 @@ main {
 
 .breadcrumb span {
     color: var(--border-color);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* ==================== NO ARTICLES ==================== */
