@@ -18,7 +18,6 @@
             </div>
             <nav class="admin-nav">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="<?php echo adminUrl('dashboard'); ?>">Dashboard</a>
 
                     <div class="admin-nav-group">
                         <button class="admin-nav-toggle" type="button">Articles</button>
@@ -41,7 +40,7 @@
                 <?php else: ?>
                     <a href="<?php echo backUrl('connexion'); ?>">Connexion</a>
                 <?php endif; ?>
-                <a href="<?php echo frontUrl('accueil'); ?>">Retour au site</a>
+                <a href="<?php echo frontUrl(''); ?>">Retour au site</a>
             </nav>
         </aside>
 

@@ -26,8 +26,5 @@
 
         <button type="submit" class="btn btn-primary">Connexion</button>
         
-        <p class="auth-link">
-            Pas encore inscrit? <a href="<?php echo url('inscription'); ?>">S'inscrire</a>
-        </p>
     </form>
 </div>
