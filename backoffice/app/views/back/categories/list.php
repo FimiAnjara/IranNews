@@ -1,9 +1,6 @@
 <div class="admin-categories admin-page">
     <h1>Gestion des catégories</h1>
-    
-    <div class="admin-actions">
-        <a href="<?php echo adminUrl('categories-create'); ?>" class="btn btn-primary">+ Créer une catégorie</a>
-    </div>
+
 
     <!-- Tableau des catégories -->
     <table class="admin-table">
