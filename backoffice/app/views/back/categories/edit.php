@@ -20,11 +20,6 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Description de la catégorie"><?php echo htmlspecialchars($category['description'] ?? ''); ?></textarea>
-        </div>
-
-        <div class="form-group">
             <label>Slug:</label>
             <code><?php echo htmlspecialchars($category['slug'] ?? ''); ?></code>
         </div>

@@ -11,7 +11,6 @@
             <tr>
                 <th>Nom</th>
                 <th>Slug</th>
-                <th>Description</th>
                 <th>Articles</th>
                 <th>Actions</th>
             </tr>
@@ -22,7 +21,6 @@
                     <tr>
                         <td><?php echo htmlspecialchars($category['name']); ?></td>
                         <td><code><?php echo htmlspecialchars($category['slug']); ?></code></td>
-                        <td><?php echo htmlspecialchars(substr($category['description'] ?? '', 0, 50)); ?></td>
                         <td><?php echo $category['article_count'] ?? 0; ?></td>
                         <td>
                             <a href="<?php echo adminUrl('categories-edit', $category['id']); ?>" class="btn btn-sm btn-primary">Éditer</a>
@@ -32,7 +30,7 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5" class="empty-state">
+                    <td colspan="4" class="empty-state">
                         Aucune catégorie trouvée. <a href="<?php echo adminUrl('categories-create'); ?>">Créer une catégorie</a>
                     </td>
                 </tr>

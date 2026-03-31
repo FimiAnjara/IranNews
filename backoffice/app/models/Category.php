@@ -85,32 +85,30 @@ class Category extends Model {
     /**
      * Créer une nouvelle catégorie
      */
-    public function create($name, $description = null) {
+    public function create($name) {
         $slug = $this->slugify($name);
         $this->db->query("
-            INSERT INTO categories (name, slug, description, created_at)
-            VALUES (:name, :slug, :description, NOW())
+            INSERT INTO categories (name, slug, created_at)
+            VALUES (:name, :slug, NOW())
         ");
         $this->db->bind(':name', $name);
         $this->db->bind(':slug', $slug);
-        $this->db->bind(':description', $description);
         return $this->db->execute();
     }
 
     /**
      * Mettre à jour une catégorie
      */
-    public function update($id, $name, $description = null) {
+    public function update($id, $name) {
         $slug = $this->slugify($name);
         $this->db->query("
             UPDATE categories 
-            SET name = :name, slug = :slug, description = :description, updated_at = NOW()
+            SET name = :name, slug = :slug
             WHERE id = :id
         ");
         $this->db->bind(':id', $id, PDO::PARAM_INT);
         $this->db->bind(':name', $name);
         $this->db->bind(':slug', $slug);
-        $this->db->bind(':description', $description);
         return $this->db->execute();
     }
 

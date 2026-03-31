@@ -19,11 +19,6 @@
             <input type="text" id="name" name="name" required maxlength="100">
         </div>
 
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Description de la catégorie"></textarea>
-        </div>
-
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Créer la catégorie</button>
             <a href="<?php echo adminUrl('categories-list'); ?>" class="btn btn-secondary">Annuler</a>
